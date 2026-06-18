@@ -1,0 +1,99 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.rs]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.{ts,tsx,js,jsx}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+[*.go]
+indent_style = tab
+indent_size = tab
+charset = utf-8
+end_of_line = lf
+
+[Makefile]
+indent_style = tab
+indent_size = tab
+charset = utf-8
+end_of_line = lf
+
+[*.{yaml,yml,json,md}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+[*.{c,h,cpp,hpp}]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.java]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.lua]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.hs]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+[*.rb]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+[*.{sh,pl}]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.{tf,toml}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+[*.sql]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.{html,css}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
