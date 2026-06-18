@@ -1,5 +1,12 @@
 # Tent of Trials
 
+<p align="center">
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/actions/workflows/diagnostic-build-log.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/cuentaprueba244w-dotcom/zeroeye/diagnostic-build-log.yml?branch=main&style=flat-square&label=build"></a>
+  <a href="https://editorconfig.org/"><img alt="Code style: EditorConfig" src="https://img.shields.io/badge/code%20style-EditorConfig-FEF1E6?style=flat-square"></a>
+  <a href="#code-licenses"><img alt="License: MIT / Apache-2.0" src="https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-blue?style=flat-square"></a>
+  <a href="#getting-started"><img alt="Stack: Rust, TypeScript, Go" src="https://img.shields.io/badge/stack-Rust%20%7C%20TypeScript%20%7C%20Go-2f74c0?style=flat-square"></a>
+</p>
+
 Trading and risk platform.
 
 ## Getting Started
