@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://zeroeye.local/schemas/frontend-package.schema.json",
+  "title": "Zeroeye frontend package configuration",
+  "description": "Schema for the frontend/package.json file used by the Vite React frontend.",
+  "type": "object",
+  "required": [
+    "name",
+    "private",
+    "version",
+    "type",
+    "scripts",
+    "dependencies",
+    "devDependencies"
+  ],
+  "properties": {
+    "name": {
+      "description": "NPM package name for the frontend workspace.",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$"
+    },
+    "private": {
+      "description": "Frontend packages should not be accidentally published.",
+      "type": "boolean",
+      "const": true
+    },
+    "version": {
+      "description": "Semantic package version.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "type": {
+      "description": "Node module type used by Vite.",
+      "type": "string",
+      "enum": [
+        "module",
+        "commonjs"
+      ]
+    },
+    "scripts": {
+      "description": "NPM scripts required for local development, production build, and preview.",
+      "type": "object",
+      "required": [
+        "dev",
+        "build",
+        "preview"
+      ],
+      "properties": {
+        "dev": {
+          "type": "string",
+          "minLength": 1
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preview": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "dependencies": {
+      "$ref": "#/definitions/dependencyMap"
+    },
+    "devDependencies": {
+      "$ref": "#/definitions/dependencyMap"
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "dependencyMap": {
+      "description": "Map of package names to version ranges.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
