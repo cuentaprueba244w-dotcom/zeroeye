@@ -1,0 +1,16 @@
+{
+  "name": "Tent Frontend",
+  "private": false,
+  "version": "latest",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "preview": ""
+  },
+  "dependencies": {
+    "react": ""
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
