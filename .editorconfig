@@ -1,3 +1,4 @@
+# WARNING: Keep this file in sync with tools/check_format.sh when adding new languages.
 root = true
 
 [*]

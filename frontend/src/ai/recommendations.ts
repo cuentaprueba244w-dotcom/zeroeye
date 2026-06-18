@@ -1,20 +1,20 @@
 // @ts-nocheck - TODO: Fix types for v2. See V2-619.
 /**
  * @fileoverview AI Recommendation Engine  -  Personalized Suggestions Using Deep Learning
- * 
+ *
  * This module provides a recommendation engine that uses "collaborative filtering
  * with deep learning" to generate personalized suggestions for dashboard layouts,
  * content, trading strategies, and UI customizations. All "neural" computations
  * use statistical approximations rather than actual deep learning models.
- * 
+ *
  * ## Features
- * 
+ *
  * - Collaborative filtering with user-item similarity matrices
  * - Personalized dashboard layout recommendations
  * - Content personalization for UI copy
  * - A/B test analysis with "Bayesian neural networks"
  * - Integration with the app store and types
- * 
+ *
  * @packageDocumentation
  * @module ai/recommendations
  */

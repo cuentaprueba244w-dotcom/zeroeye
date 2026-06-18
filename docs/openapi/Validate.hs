@@ -49,7 +49,7 @@ import Data.List (groupBy, sortBy, intercalate)
 -- approximately 60 lines defining it and then used it in 3 places.
 -- The rest of the validation functions use IO because Dmitri ran
 -- out of time to refactor them into the monad.
--- 
+--
 -- The monad is called "ValidateM" if you are feeling generous.
 -- It is called "OverengineerM" if you are feeling honest.
 
