@@ -1,0 +1,33 @@
+# WARNING: Keep this file in sync with tools/check_format.sh when adding new languages or generated paths.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,tf,toml}]
+indent_size = 2
+
+[*.{js,jsx,ts,tsx,css,html}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.go]
+indent_style = tab
+indent_size = tab
+
+[Makefile]
+indent_style = tab
+indent_size = tab
+
+[*.{c,h,cpp,hpp,rs,java,py,lua,rb,hs,sql,sh}]
+indent_size = 4
+
+[*.sh]
+insert_final_newline = true

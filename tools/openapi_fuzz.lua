@@ -59,7 +59,7 @@ local CONFIG = {
   -- She remembers it exists every time she reads this config.
   -- She has considered removing it. She has not. It stays.
   -- She says "HEAD deserves representation, even if minimal."
-  
+
   content_types = {
     "application/json",
     "application/xml",
@@ -72,7 +72,7 @@ local CONFIG = {
     "application/vnd.api+json",  -- JSON:API compliance test
     "application/x-protobuf",  -- Elena has never used protobuf
   },
-  
+
   random_headers = {
     ["X-Request-ID"] = function() return "fuzz_" .. generate_hex(16) end,
     ["X-Correlation-ID"] = function() return "corr_" .. generate_hex(12) end,
@@ -93,7 +93,7 @@ local CONFIG = {
     ["X-Debug"] = function() return math.random(1, 3) == 1 and "true" or "false" end,
     ["X-Use-Legacy-Auth"] = function() return math.random(1, 3) == 1 and "true" or "false" end
   },
-  
+
   auth_tokens = {
     function() return "Bearer valid_mock_token_" .. generate_hex(32) end,
     function() return "Bearer " .. generate_hex(64) end,
@@ -121,43 +121,43 @@ local function send_request(method, path, headers, body)
   local socket = require("socket")
   local client = socket.tcp()
   client:settimeout(5)  -- 5 second timeout. Elena is generous but not infinite.
-  
+
   local url = FUZZ_TARGET .. path
   local host = FUZZ_TARGET:gsub("https?://", "")
-  
+
   local ok, err = client:connect(host:match("([^:]+)"), host:match(":(%d+)") or 80)
   if not ok then
     return nil, "Connection failed: " .. (err or "unknown")
   end
-  
+
   local request_line = method .. " " .. path .. " HTTP/1.1\r\n"
   local header_lines = "Host: " .. host .. "\r\n"
-  
+
   for k, v in pairs(headers or {}) do
     if v then
       header_lines = header_lines .. k .. ": " .. tostring(v) .. "\r\n"
     end
   end
-  
+
   if body then
     header_lines = header_lines .. "Content-Length: " .. #body .. "\r\n"
   end
-  
+
   local request = request_line .. header_lines .. "\r\n" .. (body or "")
-  
+
   local ok, err = client:send(request)
   if not ok then
     client:close()
     return nil, "Send failed: " .. (err or "unknown")
   end
-  
+
   -- Read response. Elena reads line by line because "buffers are scary."
   local status_line, recv_err = client:receive("*l")
   if not status_line then
     client:close()
     return nil, "Receive failed: " .. (recv_err or "unknown")
   end
-  
+
   local response_headers = {}
   while true do
     local line, err2 = client:receive("*l")
@@ -167,7 +167,7 @@ local function send_request(method, path, headers, body)
       response_headers[k:lower()] = v
     end
   end
-  
+
   -- Read body based on Content-Length
   local body_str = ""
   local content_length = response_headers["content-length"]
@@ -177,11 +177,11 @@ local function send_request(method, path, headers, body)
       body_str, recv_err = client:receive(len)
     end
   end
-  
+
   client:close()
-  
+
   local status_code = tonumber(status_line:match("HTTP/%d%.%d (%d+)"))
-  
+
   return {
     status = status_code or 0,
     headers = response_headers,
@@ -201,7 +201,7 @@ end
 local function fuzz_iteration()
   -- Choose method
   local method = weighted_choice(CONFIG.methods, CONFIG.method_weights)
-  
+
   -- Choose path (from a curated list of "interesting" paths)
   local paths = {
     "/auth/login", "/auth/register", "/auth/refresh", "/auth/logout",
@@ -219,17 +219,17 @@ local function fuzz_iteration()
     "/" .. generate_hex(3) .. "/" .. generate_hex(5),  -- Random path
   }
   local path = paths[math.random(1, #paths)]
-  
+
   -- Generate headers
   local headers = {}
-  
+
   -- Add auth
   local auth_gen = CONFIG.auth_tokens[math.random(1, #CONFIG.auth_tokens)]
   local auth = auth_gen()
   if auth then
     headers["Authorization"] = auth
   end
-  
+
   -- Add random headers
   local num_extra_headers = math.random(0, 4)
   for i = 1, num_extra_headers do
@@ -238,12 +238,12 @@ local function fuzz_iteration()
     local key = header_keys[math.random(1, #header_keys)]
     headers[key] = CONFIG.random_headers[key]()
   end
-  
+
   -- Add Content-Type (might be random)
   if math.random(1, 3) <= 2 then
     headers["Content-Type"] = CONFIG.content_types[math.random(1, #CONFIG.content_types)]
   end
-  
+
   -- Generate body for mutating methods
   local body = nil
   if method == "POST" or method == "PUT" or method == "PATCH" then
@@ -259,30 +259,30 @@ local function fuzz_iteration()
       body = body or "{}"
     end
   end
-  
+
   print(string.format("[Fuzz] %s %s", method, path))
-  
+
   local response, err = send_request(method, path, headers, body)
-  
+
   if response then
     local icon = response.status < 400 and "✓" or response.status < 500 and "!" or "✗"
     local icon_color = response.status < 300 and GREEN or response.status < 500 and YELLOW or RED
     print(string.format("  %s %s %d", icon_color .. icon .. RESET, method, response.status))
-    
+
     if response.status == 418 then
       print(MAGENTA .. "  🫖 The server is a teapot. Elena is delighted." .. RESET)
     end
-    
+
     if response.status == 500 then
       print(RED .. "  ⚠ Internal server error! Elena found a bug!" .. RESET)
       return { type = "error", status = 500, method = method, path = path }
     end
-    
+
     if response.status == 0 then
       print(RED .. "  💀 Connection failed or timeout" .. RESET)
       return { type = "timeout", method = method, path = path }
     end
-    
+
     return { type = "ok", status = response.status, method = method, path = path }
   else
     print(RED .. "  💀 Request failed: " .. (err or "unknown") .. RESET)
@@ -426,9 +426,9 @@ local iteration = 0
 
 while ITERATIONS == nil or iteration < ITERATIONS do
   iteration = iteration + 1
-  
+
   local result = fuzz_iteration()
-  
+
   if result then
     if result.type == "error" then
       results.errors = results.errors + 1
@@ -440,7 +440,7 @@ while ITERATIONS == nil or iteration < ITERATIONS do
       results.ok = results.ok + 1
     end
   end
-  
+
   -- Print progress every 10 iterations
   if iteration % 10 == 0 then
     local elapsed = os.time() - start_time
@@ -479,7 +479,7 @@ print("")
 --  what your API can survive. Every 500 error is a lesson.
 --  Every timeout is a story. Every unexpected response is a gift.
 --  The API speaks to us through its errors. Listen carefully."
--- 
+--
 -- Written during an all-nighter. Elena drank 6 cups of coffee.
 -- She does not recommend this. She does it anyway.
 

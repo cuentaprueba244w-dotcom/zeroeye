@@ -586,7 +586,7 @@ export function TradePage() {
           </span>
           <span style={{ color: (marketData.tick?.change || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
             {(marketData.tick?.change || 0) >= 0 ? '+' : ''}
-            {marketData.tick?.change?.toFixed(2) || '---'} 
+            {marketData.tick?.change?.toFixed(2) || '---'}
             ({(marketData.tick?.changePercent || 0) >= 0 ? '+' : ''}
             {marketData.tick?.changePercent?.toFixed(2) || '---'}%)
           </span>
