@@ -12,7 +12,7 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Tuple, Dict, Any
 
 ROOT = Path(__file__).resolve().parent
 DIAGNOSTIC_DIR = ROOT / "diagnostic"
@@ -38,7 +38,7 @@ def current_commit_id() -> str:
     return "00000000"
 
 
-def diagnostic_paths_for_commit() -> tuple[Path, Path, str]:
+def diagnostic_paths_for_commit() -> Tuple[Path, Path, str]:
     """Return stable diagnostic artifact paths under diagnostic/ for the current commit."""
     DIAGNOSTIC_DIR.mkdir(parents=True, exist_ok=True)
     commit_id = current_commit_id()
@@ -47,12 +47,12 @@ def diagnostic_paths_for_commit() -> tuple[Path, Path, str]:
     return logd_path, metadata_path, commit_id
 
 
-def split_diagnostic_logd(logd_path: Path, chunk_size: int = DIAGNOSTIC_CHUNK_SIZE) -> list[Path]:
+def split_diagnostic_logd(logd_path: Path, chunk_size: int = DIAGNOSTIC_CHUNK_SIZE) -> List[Path]:
     """Split an oversized .logd into numbered .logd chunks and remove the original."""
     if logd_path.stat().st_size <= chunk_size:
         return [logd_path]
 
-    chunks: list[Path] = []
+    chunks: List[Path] = []
     stem = logd_path.stem
     with logd_path.open("rb") as source:
         index = 1
@@ -74,10 +74,11 @@ class Module:
     name: str
     language: str
     dir: Path
-    build_cmd: list[str]
-    clean_cmd: list[str]
+    build_cmd: List[str]
+    clean_cmd: List[str]
     build_dir: Optional[Path] = None
-    env: Optional[dict[str, str]] = None
+    env: Optional[Dict[str, str]] = None
+
 
 MODULES = [
     Module(
@@ -223,7 +224,7 @@ def encryptly_platform_help() -> str:
     return f"detected {detected}; available: {available}"
 
 
-def check_encryptly_runs(timeout: int = 600) -> tuple[bool, str]:
+def check_encryptly_runs(timeout: int = 600) -> Tuple[bool, str]:
     """Verify encryptly can create a diagnostic bundle before doing any build work."""
     encryptly_bin = get_encryptly_bin()
     if encryptly_bin is None:
@@ -251,9 +252,6 @@ def check_encryptly_runs(timeout: int = 600) -> tuple[bool, str]:
             text=True,
             timeout=timeout,
         )
-        # if result.returncode != 0:
-        #     output = result.stderr.strip() or result.stdout.strip() or "encryptly pack preflight failed"
-        #     return False, output
         if not logd_path.exists():
             return False, "encryptly preflight completed without creating a .logd"
         return True, "encryptly preflight passed"
@@ -264,6 +262,7 @@ def check_encryptly_runs(timeout: int = 600) -> tuple[bool, str]:
     finally:
         shutil.rmtree(workspace, ignore_errors=True)
 
+
 class Colors:
     GREEN = "\033[92m"
     YELLOW = "\033[93m"
@@ -273,12 +272,14 @@ class Colors:
     RESET = "\033[0m"
     GRAY = "\033[90m"
 
+
 def color(text: str, code: str) -> str:
     if not sys.stdout.isatty():
         return text
     return f"{code}{text}{Colors.RESET}"
 
-def check_prerequisites() -> list[str]:
+
+def check_prerequisites() -> List[str]:
     required = {
         "cargo": "Rust",
         "npm": "Node.js",
@@ -301,11 +302,12 @@ def check_prerequisites() -> list[str]:
 
     return missing
 
+
 def build_module(
     module: Module,
     release: bool = False,
     verbose: bool = False,
-) -> tuple[bool, float, str]:
+) -> Tuple[bool, float, str]:
 
     print(f"\n  {color('▸', Colors.CYAN)} Building {color(module.name, Colors.BOLD)} ({module.language})...")
 
@@ -351,7 +353,7 @@ def build_module(
         except FileNotFoundError as e:
             return False, 0, f"Command not found: {e}"
         if cfg_result.returncode != 0:
-            output_lines = []
+            output_lines: List[str] = []
             if cfg_result.stdout:
                 output_lines.append(cfg_result.stdout.strip())
             if cfg_result.stderr:
@@ -385,7 +387,7 @@ def build_module(
         return False, 0, f"Command not found: {e}"
 
     elapsed = time.time() - start
-    output_lines = []
+    output_lines: List[str] = []
 
     if result.stdout:
         output_lines.append(result.stdout.strip())
@@ -396,6 +398,7 @@ def build_module(
     success = result.returncode == 0
 
     return success, elapsed, output
+
 
 def clean_module(module: Module, verbose: bool = False) -> bool:
     print(f"  {color('▸', Colors.YELLOW)} Cleaning {module.name}...")
@@ -413,6 +416,7 @@ def clean_module(module: Module, verbose: bool = False) -> bool:
         print(f"    {color('✗', Colors.RED)} Clean failed: {e}")
         return False
 
+
 def verify_binary(module: Module) -> Optional[str]:
     if module.build_dir is None:
         return None
@@ -428,7 +432,8 @@ def verify_binary(module: Module) -> Optional[str]:
         return str(path)
     return None
 
-def run_cmd(cmd: list[str], **kwargs) -> tuple[bool, str]:
+
+def run_cmd(cmd: List[str], **kwargs: Any) -> Tuple[bool, str]:
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, check=False, **kwargs
@@ -483,15 +488,15 @@ def collect_system_info() -> str:
 
 
 def build_diagnostic_report(
-    results: list[tuple[str, bool, float, str, Optional[str]]],
+    results: List[Tuple[str, bool, float, str, Optional[str]]],
     commit_id: str,
-    logd_relpaths: Optional[list[str]] = None,
+    logd_relpaths: Optional[List[str]] = None,
     password: Optional[str] = None,
     logd_error: Optional[str] = None,
     chunked: bool = False,
     message_blocker: Optional[str] = None,
-) -> dict:
-    diagnostic_logd: Optional[str | list[str]]
+) -> Dict[str, Any]:
+    diagnostic_logd: Optional[str | List[str]]
     if not logd_relpaths:
         diagnostic_logd = None
     elif len(logd_relpaths) == 1:
@@ -538,12 +543,12 @@ def build_diagnostic_report(
     return report
 
 
-def write_diagnostic_report(metadata_path: Path, report: dict) -> None:
+def write_diagnostic_report(metadata_path: Path, report: Dict[str, Any]) -> None:
     metadata_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"    {color('✓', Colors.GREEN)} {metadata_path.relative_to(ROOT)} created")
 
 
-def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
+def commit_diagnostic_artifacts(paths: List[Path], commit_id: str) -> bool:
     """Commit diagnostic files as soon as they are produced."""
     existing = [path for path in paths if path.exists()]
     if not existing:
@@ -593,16 +598,13 @@ def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
 
 
 def generate_logd(
-    results: list[tuple[str, bool, float, str, Optional[str]]],
+    results: List[Tuple[str, bool, float, str, Optional[str]]],
     verbose: bool = False,
 ) -> bool:
     logd_path, metadata_path, commit_id = diagnostic_paths_for_commit()
     display_logd = logd_path.relative_to(ROOT)
     print(f"\n  {color('▸', Colors.CYAN)} Finalizing diagnostics for {color(str(display_logd), Colors.BOLD)}...")
 
-    # Always write the JSON report first. The encrypted .logd is useful, but the
-    # report is required even when the build failed before compilation started or
-    # when encryptly itself is unavailable.
     write_diagnostic_report(metadata_path, build_diagnostic_report(results, commit_id))
 
     encryptly_bin = get_encryptly_bin()
@@ -622,7 +624,6 @@ def generate_logd(
         commit_diagnostic_artifacts([metadata_path], commit_id)
         return False
 
-    # Workspace must live under $HOME because encryptly refuses paths outside home.
     home = Path.home()
     workspace = home / ".cache" / "tent-of-trials" / "logd-workspace"
     safe_dir = workspace / "safe"
@@ -654,7 +655,7 @@ def generate_logd(
             "\n".join(summary_lines), encoding="utf-8"
         )
 
-        log_lines = []
+        log_lines: List[str] = []
         for name, success, elapsed, output, binary in results:
             log_lines.append(
                 f"\n{'=' * 50}\n{name} ({'PASS' if success else 'FAIL'}, {elapsed:.2f}s)\n"
@@ -747,7 +748,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: List[Tuple[str, bool, float, str, Optional[str]]]) -> None:
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,7 +777,8 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -891,7 +893,7 @@ Diagnostic bundle:
 
     print(f"\n  {color(f'Building {len(selected)} module(s) | release={args.release}', Colors.GRAY)}")
 
-    results: list[tuple[str, bool, float, str, Optional[str]]] = []
+    results: List[Tuple[str, bool, float, str, Optional[str]]] = []
 
     for module in selected:
         success, elapsed, output = build_module(module, args.release, args.verbose)
@@ -903,6 +905,7 @@ Diagnostic bundle:
     diagnostics_ok = generate_logd(results, args.verbose)
 
     return 0 if diagnostics_ok and all(r[1] for r in results) else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
