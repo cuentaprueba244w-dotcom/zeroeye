@@ -19,6 +19,9 @@ DIAGNOSTIC_DIR = ROOT / "diagnostic"
 DIAGNOSTIC_CHUNK_SIZE = 40 * 1024 * 1024
 ENCRYPTLY_BLOCKER_MESSAGE = "encryptly could not create an archive. You may have timed out; try launching it in the background and waiting for it to finish with no timeout due to a bug in encryptly."
 
+BuildResult = tuple[str, bool, float, str, Optional[str]]
+DiagnosticReport = dict[str, object]
+
 
 def current_commit_id() -> str:
     """Return the first 4 bytes (8 hex chars) of HEAD for stable per-commit diagnostics."""
@@ -79,7 +82,7 @@ class Module:
     build_dir: Optional[Path] = None
     env: Optional[dict[str, str]] = None
 
-MODULES = [
+MODULES: list[Module] = [
     Module(
         name="backend",
         language="Rust",
@@ -165,7 +168,7 @@ MODULES = [
 ]
 
 ENCRYPTLY_DIR = ROOT / "tools" / "encryptly"
-ENCRYPTLY_BINARIES = {
+ENCRYPTLY_BINARIES: dict[str, Path] = {
     "linux-x64": ENCRYPTLY_DIR / "linux-x64" / "encryptly",
     "linux-arm64": ENCRYPTLY_DIR / "linux-arm64" / "encryptly",
     "macos-arm64": ENCRYPTLY_DIR / "macos-arm64" / "encryptly",
@@ -483,14 +486,14 @@ def collect_system_info() -> str:
 
 
 def build_diagnostic_report(
-    results: list[tuple[str, bool, float, str, Optional[str]]],
+    results: list[BuildResult],
     commit_id: str,
     logd_relpaths: Optional[list[str]] = None,
     password: Optional[str] = None,
     logd_error: Optional[str] = None,
     chunked: bool = False,
     message_blocker: Optional[str] = None,
-) -> dict:
+) -> DiagnosticReport:
     diagnostic_logd: Optional[str | list[str]]
     if not logd_relpaths:
         diagnostic_logd = None
@@ -538,7 +541,7 @@ def build_diagnostic_report(
     return report
 
 
-def write_diagnostic_report(metadata_path: Path, report: dict) -> None:
+def write_diagnostic_report(metadata_path: Path, report: DiagnosticReport) -> None:
     metadata_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"    {color('✓', Colors.GREEN)} {metadata_path.relative_to(ROOT)} created")
 
@@ -593,7 +596,7 @@ def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
 
 
 def generate_logd(
-    results: list[tuple[str, bool, float, str, Optional[str]]],
+    results: list[BuildResult],
     verbose: bool = False,
 ) -> bool:
     logd_path, metadata_path, commit_id = diagnostic_paths_for_commit()
@@ -747,7 +750,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: list[BuildResult]) -> None:
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,7 +779,7 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -891,7 +894,7 @@ Diagnostic bundle:
 
     print(f"\n  {color(f'Building {len(selected)} module(s) | release={args.release}', Colors.GRAY)}")
 
-    results: list[tuple[str, bool, float, str, Optional[str]]] = []
+    results: list[BuildResult] = []
 
     for module in selected:
         success, elapsed, output = build_module(module, args.release, args.verbose)
