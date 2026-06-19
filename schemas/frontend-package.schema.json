@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://tent-of-trials.example/schemas/frontend-package.schema.json",
+  "title": "Tent of Trials Frontend Package Configuration",
+  "description": "Schema for the frontend/package.json configuration used by the Vite React frontend.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "private",
+    "version",
+    "type",
+    "scripts",
+    "dependencies",
+    "devDependencies"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Package name for the frontend application."
+    },
+    "private": {
+      "type": "boolean",
+      "description": "The frontend package should remain private because it is an application package."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$",
+      "description": "Semantic package version."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["module"],
+      "description": "The frontend uses native ES modules."
+    },
+    "scripts": {
+      "type": "object",
+      "description": "NPM scripts required for local development, production builds, and previews.",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "required": ["dev", "build", "preview"],
+      "properties": {
+        "dev": {
+          "type": "string",
+          "minLength": 1
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preview": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dependencies": {
+      "$ref": "#/definitions/dependencyMap",
+      "description": "Runtime dependencies bundled by the frontend."
+    },
+    "devDependencies": {
+      "$ref": "#/definitions/dependencyMap",
+      "description": "Development-only dependencies used by tooling and type checking."
+    }
+  },
+  "definitions": {
+    "dependencyMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^(?:@[-A-Za-z0-9_.]+/)?[-A-Za-z0-9_.]+$": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
