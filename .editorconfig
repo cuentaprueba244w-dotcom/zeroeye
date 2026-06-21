@@ -1,0 +1,39 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{py,rs,c,h,cpp,hpp,hs,java,lua,pl,rb,sql,tf}]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+[*.{ts,tsx,js,jsx,json,yml,yaml,md,css,html,toml}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+[*.{go,mod,sum}]
+indent_style = tab
+indent_size = tab
+charset = utf-8
+end_of_line = lf
+
+[{Makefile,makefile,*.mk}]
+indent_style = tab
+indent_size = tab
+charset = utf-8
+end_of_line = lf
+
+[*.sh]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
