@@ -1,0 +1,103 @@
+# EditorConfig helps maintain consistent formatting across this polyglot repository.
+# See https://editorconfig.org/
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Python
+[*.py]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+# Rust
+[*.rs]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+# TypeScript / JavaScript
+[*.{ts,tsx,js,jsx}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+# Go: gofmt uses tabs for indentation.
+[*.go]
+indent_style = tab
+indent_size = tab
+charset = utf-8
+end_of_line = lf
+
+# Makefiles require literal tabs for recipes.
+[{Makefile,makefile,*.mk}]
+indent_style = tab
+indent_size = tab
+charset = utf-8
+end_of_line = lf
+
+# YAML / JSON / Markdown
+[*.{yml,yaml,json,md}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = false
+
+# TOML
+[*.toml]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+# HTML / CSS
+[*.{html,css}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+# C / C++ / headers
+[*.{c,h,cpp,hpp}]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+# Java
+[*.java]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+
+# Haskell
+[*.hs]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+# Lua / Ruby / Perl / shell scripts
+[*.{lua,rb,pl,sh}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+# SQL / Terraform
+[*.{sql,tf}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+end_of_line = lf
