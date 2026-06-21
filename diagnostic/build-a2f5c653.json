@@ -1,0 +1,87 @@
+{
+  "generated_at": "2026-06-21T06:04:56.032579+00:00",
+  "commit": "a2f5c653",
+  "diagnostic_logd": "diagnostic/build-a2f5c653.logd",
+  "diagnostic_logd_error": null,
+  "message_blocker": null,
+  "chunked": false,
+  "chunk_size_bytes": null,
+  "password": "8f549d93abd9b6226afc",
+  "decrypt_command": "encryptly unpack diagnostic/build-a2f5c653.logd <outdir> --password 8f549d93abd9b6226afc",
+  "total_modules": 10,
+  "passed": 4,
+  "failed": 6,
+  "modules": [
+    {
+      "name": "backend",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [Errno 2] No such file or directory: 'cargo'"
+    },
+    {
+      "name": "frontend",
+      "status": "PASS",
+      "elapsed_seconds": 36.269,
+      "artifact": "/home/harold/harold-autonomy/work_zeroeye_editorconfig_clean_2026-06-21/frontend/dist",
+      "output": "> tent-frontend@0.0.0 build\n> tsc -b && vite build\n\nvite v6.4.3 building for production...\ntransforming...\n\u2713 100 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.62 kB \u2502 gzip:  0.34 kB\ndist/assets/state-BkjSKDbY.js     8.91 kB \u2502 gzip:  3.55 kB \u2502 map:    57.15 kB\ndist/assets/vendor-CREcWLHI.js   48.93 kB \u2502 gzip: 17.22 kB \u2502 map:   481.27 kB\ndist/assets/index-CyxcoTyU.js   231.32 kB \u2502 gzip: 72.02 kB \u2502 map: 1,044.42 kB\n\u2713 built in 8.09s"
+    },
+    {
+      "name": "market",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [Errno 2] No such file or directory: 'go'"
+    },
+    {
+      "name": "frailbox",
+      "status": "PASS",
+      "elapsed_seconds": 1.416,
+      "artifact": "/home/harold/harold-autonomy/work_zeroeye_editorconfig_clean_2026-06-21/frailbox/frailbox",
+      "output": "gcc -Wall -Wextra -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -Iinclude -MMD -MP -c src/arena.c -o build/src/arena.o\ngcc -Wall -Wextra -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -Iinclude -MMD -MP -c src/logger.c -o build/src/logger.o\ngcc -Wall -Wextra -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -Iinclude -MMD -MP -c src/sandbox.c -o build/src/sandbox.o\ngcc -Wall -Wextra -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -Iinclude -MMD -MP -c main.c -o build/main.o\ngcc -Wall -Wextra -Wpedantic -std=c2x -O2 -g -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fPIE -Iinclude build/src/arena.o build/src/logger.o build/src/sandbox.o build/main.o -o frailbox -pie -z relro -z now\nsrc/arena.c: In function \u2018arena_contains\u2019:\nsrc/arena.c:179:17: warning: comparison of distinct pointer types lacks a cast [-Wcompare-distinct-pointer-types]\n  179 |             ptr < (char *)region->start + region->size) {\n      |                 ^\nsrc/logger.c: In function \u2018log_message\u2019:\nsrc/logger.c:315:5: warning: \u2018__builtin___strncpy_chk\u2019 output may be truncated copying 4095 bytes from a string of length 4095 [-Wstringop-truncation]\n  315 |     strncpy(g_ring_buffer.entries[g_ring_buffer.head], message, MAX_LOG_LINE - 1);\n      |     ^"
+    },
+    {
+      "name": "engine",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [Errno 2] No such file or directory: 'cmake'"
+    },
+    {
+      "name": "compliance",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [Errno 2] No such file or directory: 'javac'"
+    },
+    {
+      "name": "v2-market-stream",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [Errno 2] No such file or directory: 'ruby'"
+    },
+    {
+      "name": "nfc-scanner",
+      "status": "PASS",
+      "elapsed_seconds": 0.004,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "openapi-haskell",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [Errno 2] No such file or directory: 'ghc'"
+    },
+    {
+      "name": "openapi-tools",
+      "status": "PASS",
+      "elapsed_seconds": 0.005,
+      "artifact": null,
+      "output": ""
+    }
+  ],
+  "pr_note": "Include the encrypted diagnostic logd artifact(s): diagnostic/build-a2f5c653.logd. The encrypted .logd is the required diagnostic content for PR review; this JSON file is metadata. Maintainers may ask you to remove these diagnostic artifacts before merging."
+}
