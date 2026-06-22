@@ -1,4 +1,4 @@
-﻿"""Tests for build.py diagnostic generation"""
+"""Tests for build.py diagnostic generation"""
 import json
 import os
 import sys
