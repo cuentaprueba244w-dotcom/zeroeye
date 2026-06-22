@@ -894,13 +894,26 @@ Diagnostic bundle:
     results: list[tuple[str, bool, float, str, Optional[str]]] = []
 
     for module in selected:
-        success, elapsed, output = build_module(module, args.release, args.verbose)
-        binary = verify_binary(module) if success else None
-        results.append((module.name, success, elapsed, output, binary))
+        try:
+            success, elapsed, output = build_module(module, args.release, args.verbose)
+            binary = verify_binary(module) if success else None
+            results.append((module.name, success, elapsed, output, binary))
+        except Exception as e:
+            results.append((module.name, False, 0.0, f"Unexpected build error: {e}", None))
 
     print_summary(results)
 
-    diagnostics_ok = generate_logd(results, args.verbose)
+    try:
+        diagnostics_ok = generate_logd(results, args.verbose)
+    except Exception as e:
+        print(f"  {color('Diagnostic generation failed:', Colors.RED)} {e}")
+        try:
+            logd_path, metadata_path, commit_id = diagnostic_paths_for_commit()
+            write_diagnostic_report(metadata_path, build_diagnostic_report(
+                results, commit_id, logd_error=f"Diagnostic generation error: {e}"))
+        except Exception:
+            pass
+        diagnostics_ok = False
 
     return 0 if diagnostics_ok and all(r[1] for r in results) else 1
 
