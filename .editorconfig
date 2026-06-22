@@ -1,0 +1,74 @@
+# ⚠️ WARNING: This file is auto-generated. Manual changes may be lost.
+# Run `tools/check_format.sh` to verify compliance.
+# EditorConfig for ZeroEye
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{py,sh}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+[*.{rs,toml}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+[*.{ts,tsx,js,jsx}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+[*.{go}]
+indent_style = tab
+indent_size = 4
+
+[*.{c,cpp,h,hpp}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+[*.{java,kt}]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+[*.{rb}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+[*.{lua}]
+indent_style = space
+indent_size = 2
+
+[*.{hs,cabal}]
+indent_style = space
+indent_size = 2
+
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+max_line_length = off
+
+[*.{yml,yaml,json}]
+indent_style = space
+indent_size = 2
+
+[*.{html,css,scss}]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+[*.py]
+# Python-specific
+quote_type = double
+continuation_indent_size = 8
