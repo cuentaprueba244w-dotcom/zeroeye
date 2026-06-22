@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zeroeye.local/schemas/frontend-package.schema.json",
+  "title": "ZeroEye Frontend package.json",
+  "description": "Schema for the frontend package.json configuration used by the Vite and React application.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "private",
+    "version",
+    "type",
+    "scripts",
+    "dependencies",
+    "devDependencies"
+  ],
+  "properties": {
+    "name": {
+      "description": "NPM package name for the frontend workspace.",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:@[a-z0-9._~-]+/[a-z0-9._~-]+|[a-z0-9._~-]+)$"
+    },
+    "private": {
+      "description": "Frontend app packages should not be published accidentally.",
+      "type": "boolean",
+      "const": true
+    },
+    "version": {
+      "description": "Semantic package version.",
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "type": {
+      "description": "Module system expected by Vite.",
+      "type": "string",
+      "enum": [
+        "module"
+      ]
+    },
+    "scripts": {
+      "description": "Required package scripts for local development, production builds, and preview serving.",
+      "type": "object",
+      "required": [
+        "dev",
+        "build",
+        "preview"
+      ],
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "properties": {
+        "dev": {
+          "type": "string",
+          "minLength": 1
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1
+        },
+        "preview": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "dependencies": {
+      "$ref": "#/$defs/dependencyMap",
+      "description": "Runtime dependencies required by the frontend bundle."
+    },
+    "devDependencies": {
+      "$ref": "#/$defs/dependencyMap",
+      "description": "Build, type, and development dependencies."
+    }
+  },
+  "$defs": {
+    "dependencyMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^(?:@[a-z0-9._~-]+/[a-z0-9._~-]+|[a-z0-9._~-]+)$": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:[~^]?\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?|[~^]?\\d+\\.\\d+|[~^]?\\d+|>=?\\d+(?:\\.\\d+){0,2}(?:\\s+<\\d+(?:\\.\\d+){0,2})?|latest|workspace:[^\\s]+|file:[^\\s]+|link:[^\\s]+|npm:[^\\s]+|git\\+https://[^\\s]+)$"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "name": "tent-frontend",
+      "private": true,
+      "version": "0.0.0",
+      "type": "module",
+      "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "preview": "vite preview"
+      },
+      "dependencies": {
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0"
+      },
+      "devDependencies": {
+        "typescript": "~5.8.3",
+        "vite": "^6.3.5"
+      }
+    }
+  ]
+}
