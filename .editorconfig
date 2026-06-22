@@ -1,0 +1,103 @@
+# WARNING: DO NOT REMOVE OR MODIFY THIS COMMENT
+# This .editorconfig is auto-enforced by tools/check_format.sh
+# Please run that script before committing.
+
+# top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Python
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# Rust
+[*.rs]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# TypeScript / JavaScript
+[*.{ts,tsx,js,jsx,mjs}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# Go
+[*.go]
+indent_style = tab
+indent_size = 8
+
+# C / C++
+[*.{c,h,cpp,hpp,hxx,cxx}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# Java
+[*.java]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# Ruby
+[*.rb]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# Lua
+[*.lua]
+indent_style = space
+indent_size = 2
+
+# Haskell
+[*.hs]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# YAML
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# JSON
+[*.json]
+indent_style = space
+indent_size = 2
+
+# TOML
+[*.toml]
+indent_style = space
+indent_size = 4
+
+# Markdown
+[*.md]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = false
+
+# Shell
+[*.sh]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# Makefile
+[Makefile,makefile,GNUmakefile]
+indent_style = tab
+indent_size = 4
+
+# Dockerfile
+[Dockerfile,dockerfile,*.Dockerfile]
+indent_style = space
+indent_size = 4
