@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cuentaprueba244w-dotcom/zeroeye/schemas/package.schema.json",
+  "title": "Package Configuration",
+  "description": "JSON Schema for frontend package.json configuration",
+  "type": "object",
+  "required": ["name", "version", "scripts", "dependencies", "devDependencies"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the package"
+    },
+    "version": {
+      "type": "string",
+      "description": "The version of the package",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Whether the package is private"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["module", "commonjs"],
+      "description": "The module system to use"
+    },
+    "scripts": {
+      "type": "object",
+      "description": "Scripts that can be run by name",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Production dependencies",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Development dependencies",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "peerDependencies": {
+      "type": "object",
+      "description": "Peer dependencies",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "optionalDependencies": {
+      "type": "object",
+      "description": "Optional dependencies",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}
