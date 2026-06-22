@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cuentaprueba244w-dotcom/zeroeye/blob/main/data/schema.json",
+  "title": "TentOfTrials Data Structure",
+  "description": "JSON Schema for the Tent of Trials trading and risk platform data files",
+  "type": "object",
+  "required": ["version", "data_directory"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "data_directory": {
+      "type": "object",
+      "description": "Structure of the data/ directory",
+      "required": ["schema", "seed", "migrations", "reference", "test", "backup"],
+      "properties": {
+        "schema": {
+          "type": "object",
+          "description": "Database schema definitions",
+          "properties": {
+            "file": {
+              "type": "string",
+              "enum": ["schema.sql"],
+              "description": "Primary schema file"
+            },
+            "format": {
+              "type": "string",
+              "enum": ["SQL"]
+            },
+            "update_frequency": {
+              "type": "string",
+              "enum": ["Per migration"]
+            }
+          }
+        },
+        "seed": {
+          "type": "object",
+          "description": "Development seed data",
+          "properties": {
+            "file": {
+              "type": "string",
+              "enum": ["seed.sql"]
+            },
+            "format": {
+              "type": "string",
+              "enum": ["SQL"]
+            },
+            "environment": {
+              "type": "string",
+              "enum": ["development"]
+            },
+            "warning": {
+              "type": "string",
+              "description": "Security warning about test credentials"
+            }
+          }
+        },
+        "migrations": {
+          "type": "object",
+          "description": "Database migration files",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "Migration file naming convention",
+              "pattern": "^\\d{14}_.*\\.sql$"
+            },
+            "format": {
+              "type": "string",
+              "enum": ["SQL"]
+            },
+            "tracking_table": {
+              "type": "string",
+              "enum": ["_migrations"]
+            }
+          }
+        },
+        "reference": {
+          "type": "object",
+          "description": "Reference data (instruments, exchanges)",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": ["reference/"]
+            },
+            "format": {
+              "type": "string",
+              "enum": ["JSON"]
+            },
+            "update_frequency": {
+              "type": "string",
+              "enum": ["Weekly"]
+            }
+          }
+        },
+        "test": {
+          "type": "object",
+          "description": "Test data for development",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": ["test/"]
+            },
+            "format": {
+              "type": "string",
+              "enum": ["JSON"]
+            },
+            "update_frequency": {
+              "type": "string",
+              "enum": ["Manual"]
+            }
+          }
+        },
+        "backup": {
+          "type": "object",
+          "description": "Database backup snapshots",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": ["backup/"]
+            },
+            "format": {
+              "type": "string",
+              "enum": ["SQL"]
+            },
+            "compression": {
+              "type": "string",
+              "enum": ["gzip"]
+            },
+            "encryption": {
+              "type": "string",
+              "enum": ["GPG"]
+            },
+            "retention_days": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of days backups are retained"
+            }
+          }
+        }
+      }
+    }
+  }
+}
