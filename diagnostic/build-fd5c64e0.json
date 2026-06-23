@@ -1,0 +1,87 @@
+{
+  "generated_at": "2026-06-22T12:08:09.530288+00:00",
+  "commit": "fd5c64e0",
+  "diagnostic_logd": "diagnostic/build-fd5c64e0.logd",
+  "diagnostic_logd_error": null,
+  "message_blocker": null,
+  "chunked": false,
+  "chunk_size_bytes": null,
+  "password": "no-encryptly-on-windows",
+  "decrypt_command": null,
+  "total_modules": 10,
+  "passed": 0,
+  "failed": 10,
+  "modules": [
+    {
+      "name": "backend",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: cargo"
+    },
+    {
+      "name": "frontend",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: npm"
+    },
+    {
+      "name": "market",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: go"
+    },
+    {
+      "name": "frailbox",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: make"
+    },
+    {
+      "name": "engine",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: cmake"
+    },
+    {
+      "name": "compliance",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: javac"
+    },
+    {
+      "name": "v2-market-stream",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: ruby"
+    },
+    {
+      "name": "nfc-scanner",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: luac"
+    },
+    {
+      "name": "openapi-haskell",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: ghc"
+    },
+    {
+      "name": "openapi-tools",
+      "status": "FAIL",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Command not found: luac"
+    }
+  ],
+  "pr_note": "Build run on Windows. Diagnostic JSON included. Include diagnostic/build-fd5c64e0.logd in this PR."
+}
