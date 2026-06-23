@@ -12,7 +12,7 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple, List, Any
 
 ROOT = Path(__file__).resolve().parent
 DIAGNOSTIC_DIR = ROOT / "diagnostic"
@@ -776,7 +776,7 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+def main() -> int::
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -891,7 +891,7 @@ Diagnostic bundle:
 
     print(f"\n  {color(f'Building {len(selected)} module(s) | release={args.release}', Colors.GRAY)}")
 
-    results: list[tuple[str, bool, float, str, Optional[str]]] = []
+    results: List[Tuple[str, bool, float, str, Optional[str]]] = []
 
     for module in selected:
         success, elapsed, output = build_module(module, args.release, args.verbose)
