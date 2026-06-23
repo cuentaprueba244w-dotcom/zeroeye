@@ -1,0 +1,53 @@
+﻿{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/lobster-trap/zeroeye/schemas/package.schema.json",
+  "title": "Package Configuration",
+  "description": "NPM package.json configuration schema for the Tent of Trials frontend application.",
+  "type": "object",
+  "required": ["name", "version", "scripts", "dependencies"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name for the frontend application.",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Whether this package is private and not published to npm."
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version string.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["module", "commonjs"],
+      "description": "Module system type."
+    },
+    "scripts": {
+      "type": "object",
+      "description": "NPM run scripts for build and development commands.",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Runtime dependencies with semver ranges.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[\\^~]?\\d+\\.\\d+\\.\\d+"
+      }
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Development-only dependencies with semver ranges.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[\\^~]?\\d+\\.\\d+\\.\\d+"
+      }
+    }
+  }
+}
