@@ -1,3 +1,11 @@
+
+<p align="center">
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/cuentaprueba244w-dotcom/zeroeye/ci.yml?branch=main&style=flat-square&label=build" alt="CI"></a>
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/blob/main/LICENSE"><img src="https://img.shields.io/github/license/cuentaprueba244w-dotcom/zeroeye?style=flat-square" alt="License"></a>
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye"><img src="https://img.shields.io/badge/python-3.10+-blue?style=flat-square&logo=python" alt="Python"></a>
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye"><img src="https://img.shields.io/badge/rust-1.70+-orange?style=flat-square&logo=rust" alt="Rust"></a>
+</p>
+
 # Tent of Trials
 
 Trading and risk platform.
