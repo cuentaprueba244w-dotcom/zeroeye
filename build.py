@@ -301,7 +301,7 @@ def check_prerequisites() -> list[str]:
 
     return missing
 
-def build_module(
+def build_module( -> None
     module: Module,
     release: bool = False,
     verbose: bool = False,
@@ -482,7 +482,7 @@ def collect_system_info() -> str:
     return "\n".join(lines)
 
 
-def build_diagnostic_report(
+def build_diagnostic_report( -> None
     results: list[tuple[str, bool, float, str, Optional[str]]],
     commit_id: str,
     logd_relpaths: Optional[list[str]] = None,
@@ -592,7 +592,7 @@ def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
     return True
 
 
-def generate_logd(
+def generate_logd( -> None
     results: list[tuple[str, bool, float, str, Optional[str]]],
     verbose: bool = False,
 ) -> bool:
@@ -747,7 +747,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]): -> None
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,7 +776,7 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+def main(): -> None
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
