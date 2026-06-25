@@ -1,14 +1,14 @@
 # Contributing to Tent of Trials
 
-Thank you for your interest in contributing to Tent of Trials! This guide will help you get started with local development and our pull request workflow.
+Thank you for your interest in contributing to Tent of Trials! This document will guide you through the local setup, build process, and pull request workflow.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Local Setup](#local-setup)
 - [Build Instructions](#build-instructions)
-- [Pull Request Workflow](#pull-request-workflow)
 - [Code Style](#code-style)
+- [Pull Request Workflow](#pull-request-workflow)
 - [Required Validation](#required-validation)
 
 ## Prerequisites
@@ -16,14 +16,10 @@ Thank you for your interest in contributing to Tent of Trials! This guide will h
 Before you begin, ensure you have the following installed on your system:
 
 - `git`
-- `python3`
-- Module-specific dependencies (see [README.md](README.md) for detailed installation instructions)
+- `python3` (for the build system)
+- Module-specific dependencies as listed in the [Getting Started](#local-setup) section
 
 ## Local Setup
 
-### 1. Fork the Repository
-
-Click the "Fork" button on the GitHub repository page to create your own copy.
-
-### 2. Clone Your Fork
+### 1. Clone the Repository
 
