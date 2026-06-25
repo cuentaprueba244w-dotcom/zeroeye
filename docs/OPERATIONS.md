@@ -310,3 +310,81 @@ Audit logs are retained for 365 days and include:
 2. Update Kubernetes secret: `kubectl create secret tls tot-tls --cert=new.crt --key=new.key -n tent-production --dry-run=client -o yaml | kubectl apply -f -`
 3. Restart services: `kubectl rollout restart deployment -n tent-production`
 4. Verify new certificate: `openssl s_client -connect api.example.com:443 -servername api.example.com`
+## Dry-Run Rollback Summary
+
+> **New in Issue #1**: Structured dry-run rollback summary export for deploy.py.
+
+### Overview
+
+The `--export-summary` flag on `deploy.py` generates structured text and JSON summary files
+for rollback dry-runs, including detailed step breakdowns, risk assessments, and
+auto-approve detection. No service state is modified.
+
+### Usage
+
+Basic dry-run with summary export (exports to current directory):
+```
+python3 deploy.py --env staging --service backend --rollback --version v3.1.0 --dry-run --export-summary
+```
+
+Export to a specific directory:
+```
+python3 deploy.py --env production --service frontend --rollback --version v3.2.0 --dry-run --export-summary /tmp/rollback-plans
+```
+
+### Output Files
+
+| File | Format | Content |
+|------|--------|---------|
+| rollback_dry_run.txt | Text | Human-readable summary with service info, plans, warnings |
+| rollback_dry_run.json | JSON | Machine-parseable structured data |
+
+### JSON Schema
+
+```json
+{
+  "summary_type": "dry_run_rollback",
+  "generated_at": "2026-06-21T12:00:00Z",
+  "filter": {
+    "service": "backend",
+    "environment": "staging"
+  },
+  "totals": {
+    "services_included": 1,
+    "total_rollback_steps": 7
+  },
+  "warnings": ["Manual approval required"],
+  "plans": [
+    {
+      "service": "backend",
+      "deployment": "backend-api",
+      "language": "rust",
+      "namespace": "tent-staging",
+      "kube_context": "staging-cluster",
+      "target_version": "v3.1.0",
+      "risk_note": "Standard risk: staging validation environment",
+      "planned_actions": ["...7 actions..."],
+      "rollback_steps": ["...7 steps..."],
+      "generated_at": "2026-06-21T12:00:00Z"
+    }
+  ]
+}
+```
+
+### Secret Redaction
+
+The summary automatically redacts secret-like values (API keys, passwords, tokens, bearer
+authorizations) from all summary output fields to prevent accidental credential exposure.
+This applies to both text and JSON exports.
+
+### Module Integration
+
+The dry-run summary logic lives in `tools/deploy_dry_run_summary.py` and exposes:
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| build_rollback_plan(service, env, version, services, envs) | Build a single service rollback plan | dict or empty dict for unknown |
+| build_summary(plans, env, service_opt, filter_secrets) | Aggregate plans into a summary | dict |
+| export_summary(summary, output_dir, base_name) | Write text and JSON files | dict with json and text paths |
+| format_text_summary(summary) | Render summary as formatted text | str |
+| redact_summary(data) | Recursively redact secrets from a dict | dict |

@@ -37,6 +37,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+# Dry-run rollback summary export (Issue #1)
+try:
+    from tools.deploy_dry_run_summary import (
+        build_rollback_plan,
+        build_summary,
+        export_summary,
+    )
+    HAS_DRY_RUN_SUMMARY = True
+except ImportError:
+    HAS_DRY_RUN_SUMMARY = False
+
 # ---------------------------------------------------------------------------
 # CONFIGURATION
 # ---------------------------------------------------------------------------
@@ -384,6 +395,9 @@ def parse_args():
     parser.add_argument("--list", action="store_true", help="List deployments")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be done")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument("--export-summary", nargs="?", const=".",
+                       default=None, metavar="OUTPUT_DIR",
+                       help="Export structured dry-run summary (text & JSON) to directory")
     return parser.parse_args()
 
 
@@ -405,6 +419,17 @@ def main():
 
         if args.dry_run:
             print(f"Would rollback {args.service} in {args.env} to {args.version}")
+
+            if args.export_summary and HAS_DRY_RUN_SUMMARY:
+                plan = build_rollback_plan(args.service, args.env, args.version,
+                                          services=SERVICES, envs=ENVIRONMENTS)
+                summary = build_summary([plan], env=args.env, service_opt=args.service)
+                exported = export_summary(summary, output_dir=args.export_summary)
+                return 0
+
+            if args.export_summary and not HAS_DRY_RUN_SUMMARY:
+                print("Warning: deploy_dry_run_summary module not available, "
+                       "skipping export")
             return 0
 
         success = rollback_service(args.service, args.env, args.version)

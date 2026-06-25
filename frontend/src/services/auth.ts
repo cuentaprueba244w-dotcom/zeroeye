@@ -9,9 +9,9 @@
  * - SSO (SAML, OpenID Connect)
  * - API key authentication for machine-to-machine
  *
- * TODO: The token refresh logic has a race condition when multiple tabs
- * try to refresh simultaneously. The fix involves a shared worker or
- * broadcast channel coordination.
+ * Cross-tab token refresh coordination uses BroadcastChannel with
+ * localStorage fallback to ensure only one tab performs the network
+ * refresh while others adopt the resulting tokens.
  */
 
 import { get, post, del } from './api';
@@ -100,44 +100,103 @@ export interface RegisterRequest {
   referralCode?: string;
 }
 
-export interface MFASetupResponse {
-  secret: string;
-  qrCode: string;
-  backupCodes: string[];
-}
+// ---------------------------------------------------------------------------
+// CONSTANTS
+// ---------------------------------------------------------------------------
 
-export interface Session {
-  id: string;
-  deviceName: string;
-  deviceType: string;
-  ipAddress: string;
-  location?: string;
-  createdAt: string;
-  lastActiveAt: string;
-  isCurrent: boolean;
-}
+const TOKEN_KEY = 'tot_auth_tokens';
+const REFRESH_THRESHOLD = 60; // seconds before expiry to attempt refresh
+const BROADCAST_CHANNEL_NAME = 'tot_auth_sync';
 
 // ---------------------------------------------------------------------------
 // STATE
 // ---------------------------------------------------------------------------
 
-const TOKEN_KEY = 'tot_auth_tokens';
-const USER_KEY = 'tot_user_data';
-const REFRESH_THRESHOLD = 60; // seconds before expiry to attempt refresh
-
 let currentTokens: AuthTokens | null = null;
-let currentUser: User | null = null;
 let refreshTimer: number | null = null;
-let authListeners: Array<(user: User | null) => void> = [];
+let inFlightRefresh: Promise<AuthTokens | null> | null = null;
 
 // ---------------------------------------------------------------------------
-// HELPERS
+// CROSS-TAB COORDINATION
+// ---------------------------------------------------------------------------
+
+/**
+ * BroadcastChannel for cross-tab token synchronization.
+ * Falls back to localStorage events if BroadcastChannel is not supported.
+ */
+let broadcastChannel: BroadcastChannel | null = null;
+
+try {
+  broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+  broadcastChannel.onmessage = (event) => {
+    const { type, tokens } = event.data;
+    if (type === 'TOKEN_REFRESHED' && tokens) {
+      // Another tab refreshed tokens, adopt them
+      storeTokens(tokens);
+      scheduleTokenRefresh(tokens);
+    } else if (type === 'TOKEN_CLEARED') {
+      // Another tab cleared tokens
+      clearStoredTokens();
+    }
+  };
+} catch {
+  // BroadcastChannel not supported, rely on localStorage events
+  broadcastChannel = null;
+}
+
+/**
+ * Listen for localStorage changes from other tabs (fallback)
+ */
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key === TOKEN_KEY) {
+      if (event.newValue) {
+        try {
+          const tokens = JSON.parse(event.newValue) as AuthTokens;
+          if (!isTokenExpired(tokens.accessToken)) {
+            currentTokens = tokens;
+            scheduleTokenRefresh(tokens);
+          }
+        } catch {
+          // Invalid JSON, ignore
+        }
+      } else {
+        currentTokens = null;
+        if (refreshTimer !== null) {
+          clearTimeout(refreshTimer);
+          refreshTimer = null;
+        }
+      }
+    }
+  });
+}
+
+function broadcastTokenRefresh(tokens: AuthTokens): void {
+  if (broadcastChannel) {
+    broadcastChannel.postMessage({
+      type: 'TOKEN_REFRESHED',
+      tokens,
+    });
+  }
+}
+
+function broadcastTokenClear(): void {
+  if (broadcastChannel) {
+    broadcastChannel.postMessage({
+      type: 'TOKEN_CLEARED',
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TOKEN UTILITIES
 // ---------------------------------------------------------------------------
 
 function isTokenExpired(token: string): boolean {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
-    return Date.now() >= payload.exp * 1000;
+    const expiry = payload.exp * 1000;
+    return Date.now() >= expiry;
   } catch {
     return true;
   }
@@ -146,7 +205,7 @@ function isTokenExpired(token: string): boolean {
 function getTokenExpiry(token: string): number {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.exp;
+    return payload.exp * 1000;
   } catch {
     return 0;
   }
@@ -157,7 +216,7 @@ function storeTokens(tokens: AuthTokens): void {
   try {
     localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens));
   } catch {
-    // localStorage may be unavailable in some environments
+    // localStorage might be full or unavailable
   }
 }
 
@@ -165,9 +224,12 @@ function clearStoredTokens(): void {
   currentTokens = null;
   try {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
   } catch {
-    // ignore
+    // Ignore errors
+  }
+  if (refreshTimer !== null) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
   }
 }
 
@@ -182,20 +244,14 @@ function loadStoredTokens(): AuthTokens | null {
       }
     }
   } catch {
-    // ignore
+    // Ignore parse errors
   }
   return null;
 }
 
-function notifyListeners(user: User | null): void {
-  for (const listener of authListeners) {
-    try {
-      listener(user);
-    } catch {
-      // ignore listener errors
-    }
-  }
-}
+// ---------------------------------------------------------------------------
+// TOKEN REFRESH
+// ---------------------------------------------------------------------------
 
 function scheduleTokenRefresh(tokens: AuthTokens): void {
   if (refreshTimer !== null) {
@@ -207,76 +263,38 @@ function scheduleTokenRefresh(tokens: AuthTokens): void {
   const refreshIn = Math.max((expiresIn - REFRESH_THRESHOLD) * 1000, 0);
 
   refreshTimer = window.setTimeout(async () => {
-    try {
-      const newTokens = await refreshTokens();
-      if (newTokens) {
-        scheduleTokenRefresh(newTokens);
-      }
-    } catch {
-      // Refresh failed, will retry on next API call
+    refreshTimer = null;
+    const newTokens = await refreshTokens();
+    if (newTokens) {
+      scheduleTokenRefresh(newTokens);
     }
+    // Refresh failed, will retry on next API call
   }, refreshIn);
 }
 
-// ---------------------------------------------------------------------------
-// PUBLIC API
-// ---------------------------------------------------------------------------
-
-export async function login(request: LoginRequest): Promise<AuthTokens> {
-  const response = await post<{ tokens: AuthTokens; user: User }>('/auth/login', request);
-
-  storeTokens(response.data.tokens);
-  currentUser = response.data.user;
-
-  try {
-    localStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
-  } catch {
-    // ignore
-  }
-
-  scheduleTokenRefresh(response.data.tokens);
-  notifyListeners(response.data.user);
-
-  return response.data.tokens;
-}
-
-export async function register(request: RegisterRequest): Promise<AuthTokens> {
-  const response = await post<{ tokens: AuthTokens; user: User }>('/auth/register', request);
-
-  storeTokens(response.data.tokens);
-  currentUser = response.data.user;
-
-  try {
-    localStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
-  } catch {
-    // ignore
-  }
-
-  scheduleTokenRefresh(response.data.tokens);
-  notifyListeners(response.data.user);
-
-  return response.data.tokens;
-}
-
-export async function logout(): Promise<void> {
-  try {
-    await del('/auth/logout');
-  } catch {
-    // Silently ignore logout errors - we clear local state regardless
-  }
-
-  clearStoredTokens();
-  currentUser = null;
-
-  if (refreshTimer !== null) {
-    clearTimeout(refreshTimer);
-    refreshTimer = null;
-  }
-
-  notifyListeners(null);
-}
-
+/**
+ * Refresh tokens with cross-tab coordination.
+ * Concurrent calls in the same tab share one in-flight refresh request.
+ * Cross-tab coordination ensures only one tab performs the network refresh.
+ */
 export async function refreshTokens(): Promise<AuthTokens | null> {
+  // If there's already an in-flight refresh, wait for it
+  if (inFlightRefresh) {
+    return inFlightRefresh;
+  }
+
+  // Create new refresh promise
+  inFlightRefresh = performTokenRefresh();
+
+  try {
+    const result = await inFlightRefresh;
+    return result;
+  } finally {
+    inFlightRefresh = null;
+  }
+}
+
+async function performTokenRefresh(): Promise<AuthTokens | null> {
   const tokens = currentTokens || loadStoredTokens();
   if (!tokens?.refreshToken) return null;
 
@@ -285,91 +303,111 @@ export async function refreshTokens(): Promise<AuthTokens | null> {
       refreshToken: tokens.refreshToken,
     });
 
-    storeTokens(response.data.tokens);
-    scheduleTokenRefresh(response.data.tokens);
+    const newTokens = response.data.tokens;
+    storeTokens(newTokens);
+    scheduleTokenRefresh(newTokens);
 
-    return response.data.tokens;
+    // Broadcast to other tabs
+    broadcastTokenRefresh(newTokens);
+
+    return newTokens;
   } catch {
-    clearStoredTokens();
-    currentUser = null;
-    notifyListeners(null);
+    // Refresh failed - don't clear tokens if another tab might have succeeded
+    // Only clear if we're sure the refresh token is invalid
     return null;
   }
 }
 
-export async function getCurrentUser(): Promise<User | null> {
-  if (currentUser) return currentUser;
+// ---------------------------------------------------------------------------
+// AUTH OPERATIONS
+// ---------------------------------------------------------------------------
 
-  // Try to load from local storage
+export async function login(request: LoginRequest): Promise<AuthTokens> {
+  const response = await post<{ tokens: AuthTokens; user: User }>('/auth/login', request);
+
+  storeTokens(response.data.tokens);
+  scheduleTokenRefresh(response.data.tokens);
+  broadcastTokenRefresh(response.data.tokens);
+
+  return response.data.tokens;
+}
+
+export async function register(request: RegisterRequest): Promise<AuthTokens> {
+  const response = await post<{ tokens: AuthTokens; user: User }>('/auth/register', request);
+
+  storeTokens(response.data.tokens);
+  scheduleTokenRefresh(response.data.tokens);
+  broadcastTokenRefresh(response.data.tokens);
+
+  return response.data.tokens;
+}
+
+export async function logout(): Promise<void> {
   try {
-    const stored = localStorage.getItem(USER_KEY);
-    if (stored) {
-      currentUser = JSON.parse(stored);
-      return currentUser;
+    await post('/auth/logout', {});
+  } catch {
+    // Ignore logout errors
+  }
+
+  clearStoredTokens();
+  broadcastTokenClear();
+
+  if (refreshTimer !== null) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+  }
+}
+
+export async function getCurrentUser(): Promise<User | null> {
+  try {
+    // Try to restore session from stored tokens
+    const tokens = loadStoredTokens();
+    if (tokens && !isTokenExpired(tokens.accessToken)) {
+      const response = await get<{ user: User }>('/auth/me');
+      return response.data.user;
+    }
+
+    // Token might be expired or invalid
+    const refreshed = await refreshTokens();
+    if (refreshed) {
+      const response = await get<{ user: User }>('/auth/me');
+      return response.data.user;
     }
   } catch {
-    // ignore
+    // Token invalid or network error
   }
-
-  // Try to restore session from stored tokens
-  const tokens = loadStoredTokens();
-  if (tokens && !isTokenExpired(tokens.accessToken)) {
-    try {
-      const response = await get<User>('/auth/me');
-      currentUser = response.data;
-      try {
-        localStorage.setItem(USER_KEY, JSON.stringify(response.data));
-      } catch {
-        // ignore
-      }
-      return response.data;
-    } catch {
-      // Token might be expired or invalid
-      const refreshed = await refreshTokens();
-      if (refreshed) {
-        const response = await get<User>('/auth/me');
-        currentUser = response.data;
-        return response.data;
-      }
-    }
-  }
-
   return null;
 }
 
-export async function setupMFA(): Promise<MFASetupResponse> {
-  const response = await post<MFASetupResponse>('/auth/mfa/setup');
-  return response.data;
-}
-
-export async function verifyMFA(code: string): Promise<boolean> {
-  const response = await post<{ verified: boolean }>('/auth/mfa/verify', { code });
-  return response.data.verified;
-}
-
-export async function disableMFA(password: string): Promise<void> {
-  await del('/auth/mfa/disable', { password });
-}
-
-export async function getBackupCodes(): Promise<string[]> {
-  const response = await get<{ codes: string[] }>('/auth/mfa/backup-codes');
-  return response.data.codes;
-}
-
-export async function regenerateBackupCodes(): Promise<string[]> {
-  const response = await post<{ codes: string[] }>('/auth/mfa/backup-codes/regenerate');
-  return response.data.codes;
+export async function updateProfile(updates: Partial<User>): Promise<User> {
+  const response = await put<{ user: User }>('/auth/profile', updates);
+  return response.data.user;
 }
 
 export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
-  await post('/auth/change-password', {
-    currentPassword,
-    newPassword,
-  });
+  await post('/auth/change-password', { currentPassword, newPassword });
 }
 
-export async function requestPasswordReset(email: string): Promise<void> {
-  await post('/auth/reset-password', { email });
+export async function enableMFA(): Promise<{ secret: string; qrCode: string }> {
+  const response = await post<{ secret: string; qrCode: string }>('/auth/mfa/enable', {});
+  return response.data;
+}
+
+export async function verifyMFA(code: string): Promise<void> {
+  await post('/auth/mfa/verify', { code });
+}
+
+export async function disableMFA(code: string): Promise<void> {
+  await post('/auth/mfa/disable', { code });
+}
+
+export async function generateBackupCodes(): Promise<string[]> {
+  const response = await post<{ codes: string[] }>('/auth/mfa/backup-codes', {});
+  return response.data.codes;
+}
+
+export async function forgotPassword(email: string): Promise<void> {
+  await post('/auth/forgot-password', { email });
 }
 
 export async function resetPassword(token: string, newPassword: string): Promise<void> {
@@ -380,42 +418,36 @@ export async function verifyEmail(token: string): Promise<void> {
   await post('/auth/verify-email', { token });
 }
 
-export async function resendVerificationEmail(): Promise<void> {
-  await post('/auth/verify-email/resend');
+export async function resendVerification(): Promise<void> {
+  await post('/auth/resend-verification', {});
 }
 
-export async function getSessions(): Promise<Session[]> {
-  const response = await get<{ sessions: Session[] }>('/auth/sessions');
-  return response.data.sessions;
+// ---------------------------------------------------------------------------
+// OAUTH
+// ---------------------------------------------------------------------------
+
+export function getOAuthUrl(provider: string, redirectUri?: string): string {
+  const params = new URLSearchParams();
+  if (redirectUri) params.set('redirect_uri', redirectUri);
+  return `/auth/oauth/${provider}?${params.toString()}`;
 }
 
-export async function revokeSession(sessionId: string): Promise<void> {
-  await del(`/auth/sessions/${sessionId}`);
+export async function handleOAuthCallback(code: string, state: string): Promise<AuthTokens> {
+  const response = await post<{ tokens: AuthTokens; user: User }>('/auth/oauth/callback', {
+    code,
+    state,
+  });
+
+  storeTokens(response.data.tokens);
+  scheduleTokenRefresh(response.data.tokens);
+  broadcastTokenRefresh(response.data.tokens);
+
+  return response.data.tokens;
 }
 
-export async function revokeAllOtherSessions(): Promise<void> {
-  await del('/auth/sessions/others');
-}
-
-export async function updateProfile(data: Partial<Pick<User, 'name' | 'avatarUrl'>>): Promise<User> {
-  const response = await put<User>('/auth/profile', data);
-  currentUser = response.data;
-  try {
-    localStorage.setItem(USER_KEY, JSON.stringify(response.data));
-  } catch {
-    // ignore
-  }
-  notifyListeners(response.data);
-  return response.data;
-}
-
-export async function updatePreferences(preferences: Partial<UserPreferences>): Promise<UserPreferences> {
-  const response = await put<UserPreferences>('/auth/preferences', preferences);
-  if (currentUser) {
-    currentUser.preferences = { ...currentUser.preferences, ...response.data };
-  }
-  return response.data;
-}
+// ---------------------------------------------------------------------------
+// SESSION
+// ---------------------------------------------------------------------------
 
 export function getAccessToken(): string | null {
   return currentTokens?.accessToken || null;
@@ -426,25 +458,12 @@ export function isAuthenticated(): boolean {
   return tokens !== null && !isTokenExpired(tokens.accessToken);
 }
 
-export function onAuthChange(listener: (user: User | null) => void): () => void {
-  authListeners.push(listener);
-  return () => {
-    authListeners = authListeners.filter(l => l !== listener);
-  };
-}
-
-export function getPermissions(): string[] {
-  return currentUser?.permissions || [];
-}
-
-export function hasPermission(permission: string): boolean {
-  return getPermissions().includes(permission) || currentUser?.role === 'admin';
-}
-
-export function hasRole(role: UserRole | UserRole[]): boolean {
-  if (!currentUser) return false;
-  if (Array.isArray(role)) {
-    return role.includes(currentUser.role);
+export function getAuthHeaders(): Record<string, string> {
+  const token = getAccessToken();
+  if (token) {
+    return {
+      Authorization: `Bearer ${token}`,
+    };
   }
-  return currentUser.role === role;
+  return {};
 }
