@@ -5,13 +5,22 @@ Thank you for your interest in contributing to Tent of Trials! This guide will h
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- hs
-- [Build Instructions](#build-instructions)
-- [PR Workflow](#pr-workflow)
+- [Cloning the Repository](#cloning-the-repository)
+- [Installing Dependencies](#installing-dependencies)
+- [Building](#building)
 - [Code Style](#code-style)
+- [Pull Request Workflow](#pull-request-workflow)
 - [Required Validation](#required-validation)
 
 ## Prerequisites
 
-Before you begin, ensure README.md has the full dependency list. The quick start below covers the common tools:
+Before you begin, ensure you have the following installed on your system:
+
+- Git
+- Python 3
+- Module-specific dependencies (see below)
+
+## Cloning the Repository
+
+Clone the repository using HTTPS or SSH:
 
