@@ -1,26 +1,29 @@
 # Contributing to Tent of Trials
 
-Thank you for your interest in contributing to Tent of Trials! This guide will help you get started with local setup, building, and submitting your changes.
+Thank you for your interest in contributing to Tent of Trials! This guide will help you get started with local development and our pull request workflow.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- [Cloning the Repository](#cloning-the-repository)
-- [Installing Dependencies](#installing-dependencies)
-- [Building](#building)
-- [Code Style](#code-style)
+- [Local Setup](#local-setup)
+- [Build Instructions](#build-instructions)
 - [Pull Request Workflow](#pull-request-workflow)
+- [Code Style](#code-style)
 - [Required Validation](#required-validation)
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
 
-- Git
-- Python 3
-- Module-specific dependencies (see below)
+- `git`
+- `python3`
+- Module-specific dependencies (see [README.md](README.md) for detailed installation instructions)
 
-## Cloning the Repository
+## Local Setup
 
-Clone the repository using HTTPS or SSH:
+### 1. Fork the Repository
+
+Click the "Fork" button on the GitHub repository page to create your own copy.
+
+### 2. Clone Your Fork
 
