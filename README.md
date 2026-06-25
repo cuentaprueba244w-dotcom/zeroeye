@@ -1,5 +1,17 @@
 # Tent of Trials
 
+<div align="center">
+
+[![CI](https://img.shields.io/github/actions/workflow/status/cuentaprueba244w-dotcom/zeroeye/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/cuentaprueba244w-dotcom/zeroeye/actions)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000?style=flat-square)](https://github.com/psf/black)
+[![License](https://img.shields.io/github/license/cuentaprueba244w-dotcom/zeroeye?style=flat-square)](https://github.com/cuentaprueba244w-dotcom/zeroeye/blob/main/LICENSE)
+[![Rust](https://img.shields.io/badge/Rust-2021-blue?style=flat-square&logo=rust)](https://www.rust-lang.org/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
+</div>
+
+
 Trading and risk platform.
 
 ## Getting Started
