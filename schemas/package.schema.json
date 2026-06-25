@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cuentaprueba244w-dotcom/zeroeye/schemas/package.schema.json",
+  "title": "ZeroEye Frontend Package Configuration",
+  "description": "JSON Schema for ZeroEye frontend package.json configuration",
+  "type": "object",
+  "required": ["name", "version", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the package",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "string",
+      "description": "The version of the package",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "A brief description of the package"
+    },
+    "main": {
+      "type": "string",
+      "description": "The entry point of the package"
+    },
+    "scripts": {
+      "type": "object",
+      "description": "Scripts for building, testing, and running the project",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Production dependencies",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Development dependencies",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "description": "Keywords for the package",
+      "items": {
+        "type": "string"
+      }
+    },
+    "author": {
+      "type": ["string", "object"],
+      "description": "The author of the package"
+    },
+    "license": {
+      "type": "string",
+      "description": "The license for the package"
+    },
+    "repository": {
+      "type": ["string", "object"],
+      "description": "The repository URL"
+    },
+    "bugs": {
+      "type": ["string", "object"],
+      "description": "Bug report URL"
+    },
+    "homepage": {
+      "type": "string",
+      "description": "The homepage URL"
+    }
+  },
+  "additionalProperties": true
+}

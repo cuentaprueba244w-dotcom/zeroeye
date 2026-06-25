@@ -1,5 +1,45 @@
 # Tent of Trials
 
+<p align="center">
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/cuentaprueba244w-dotcom/zeroeye/ci.yml?style=flat-square&label=Build" alt="Build Status">
+  </a>
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/cuentaprueba244w-dotcom/zeroeye?style=flat-square" alt="License">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python&logoColor=white" alt="Python">
+  </a>
+  <a href="https://www.rust-lang.org/">
+    <img src="https://img.shields.io/badge/Rust-2021-orange?style=flat-square&logo=rust&logoColor=white" alt="Rust">
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  </a>
+</p>
+
+
+
+<p align="center">
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/cuentaprueba244w-dotcom/zeroeye/ci.yml?style=flat-square&label=Build" alt="Build Status">
+  </a>
+  <a href="https://github.com/cuentaprueba244w-dotcom/zeroeye/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/cuentaprueba244w-dotcom/zeroeye?style=flat-square" alt="License">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python&logoColor=white" alt="Python">
+  </a>
+  <a href="https://www.rust-lang.org/">
+    <img src="https://img.shields.io/badge/Rust-2021-orange?style=flat-square&logo=rust&logoColor=white" alt="Rust">
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  </a>
+</p>
+
+
+
 Trading and risk platform.
 
 ## Getting Started
