@@ -1,0 +1,52 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.py]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+profile = black
+
+[*.{js,ts,jsx,tsx}]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+
+[*.rs]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+
+[*.{json,yaml,yml}]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+
+[*.md]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = false
+
+[Makefile]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+
+[{.*,*.cfg,*.ini}]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
