@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/package.schema.json",
+  "title": "Frontend Package Configuration",
+  "description": "JSON Schema for the frontend package.json configuration describing project metadata, scripts, and dependencies",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Whether the package is private"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["module", "commonjs"],
+      "description": "Module type for the project"
+    },
+    "scripts": {
+      "type": "object",
+      "description": "NPM scripts available for the project",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Production dependencies",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^([~^]?\\d+\\.\\d+\\.\\d+|\\*|latest|workspace:)$"
+      }
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Development dependencies",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^([~^]?\\d+\\.\\d+\\.\\d+|\\*|latest|workspace:)$"
+      }
+    }
+  },
+  "required": ["name", "private", "version"],
+  "additionalProperties": false
+}
