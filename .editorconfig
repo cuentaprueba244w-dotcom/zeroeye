@@ -53,3 +53,33 @@ charset = utf-8
 end_of_line = lf
 indent_style = space
 indent_size = 2
+
+[*.{c,cpp,h,hpp}]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+
+[*.lua]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+
+[*.hs]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+
+[*.sql]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+
+[*.tf]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
