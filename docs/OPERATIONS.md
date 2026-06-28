@@ -15,6 +15,29 @@
 
 ## Monitoring
 
+### Build Diagnostic Artifacts
+
+`build.py` writes diagnostic metadata for every build attempt, including
+failed builds and preflight failures. The JSON metadata records the commit,
+pass/fail counts, per-module status, elapsed time, captured output, and the
+encrypted `.logd` path or creation error.
+
+Run the focused diagnostic metadata tests with:
+
+```bash
+python3 -m unittest tests/test_build_diagnostics.py
+```
+
+For a full build submission, run:
+
+```bash
+python3 build.py
+```
+
+Attach the generated `diagnostic/build-*.logd` and matching
+`diagnostic/build-*.json` to the PR when available. If `.logd` creation fails,
+the JSON metadata explains the blocker and should still be included.
+
 ### Health Check Endpoints
 
 Each service exposes a health check endpoint:
