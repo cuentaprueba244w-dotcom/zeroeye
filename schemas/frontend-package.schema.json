@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://zeroeye.dev/schemas/frontend-package.schema.json",
+  "title": "ZeroEye Frontend Package Configuration",
+  "description": "JSON Schema describing the frontend package.json configuration for the ZeroEye project (tent-frontend Vite + React + TypeScript application)",
+  "type": "object",
+  "required": ["name", "private", "version", "type", "scripts", "dependencies", "devDependencies"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name",
+      "pattern": "^[a-z0-9._-]+$"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Whether the package is private"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["module", "commonjs"],
+      "description": "Module system type"
+    },
+    "scripts": {
+      "type": "object",
+      "description": "NPM scripts",
+      "properties": {
+        "dev": {
+          "type": "string",
+          "description": "Development server script"
+        },
+        "build": {
+          "type": "string",
+          "description": "Production build script"
+        },
+        "preview": {
+          "type": "string",
+          "description": "Build preview script"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Runtime dependencies",
+      "patternProperties": {
+        "^@?[a-z0-9._/-]+$": {
+          "type": "string",
+          "pattern": "^[~^]?\\d+"
+        }
+      },
+      "additionalProperties": false
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Development-only dependencies",
+      "patternProperties": {
+        "^@?[a-z0-9._/-]+$": {
+          "type": "string",
+          "pattern": "^[~^]?\\d+"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}
