@@ -1,0 +1,42 @@
+# WARNING: This file is auto-generated. Do not edit manually.
+# Run tools/check_format.sh to verify compliance.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{c,cpp,h,hpp}]
+indent_size = 4
+
+[*.rs]
+indent_size = 4
+
+[*.py]
+indent_size = 4
+
+[*.go]
+indent_style = tab
+
+[*.hs]
+indent_size = 2
+
+[*.lua]
+indent_size = 2
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.json]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
