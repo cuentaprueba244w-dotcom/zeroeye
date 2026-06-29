@@ -1,0 +1,34 @@
+# EditorConfig for ZeroEye polyglot codebase
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{py,pyi}]
+indent_style = space
+indent_size = 4
+
+[*.{rs}]
+indent_style = space
+indent_size = 4
+
+[*.{ts,tsx,js,jsx,mjs,cjs}]
+indent_style = space
+indent_size = 2
+
+[*.go]
+indent_style = tab
+indent_size = tab
+
+[{Makefile,makefile}]
+indent_style = tab
+indent_size = tab
+
+[*.{yml,yaml,json,md}]
+indent_style = space
+indent_size = 2
