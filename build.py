@@ -332,6 +332,8 @@ def build_module(
                     return False, time.time() - start, f"npm install failed:\n{install_result.stderr}"
             except subprocess.TimeoutExpired:
                 return False, time.time() - start, "npm install TIMEOUT (120s)"
+            except FileNotFoundError:
+                return False, time.time() - start, f"npm not found: {module.name} skipped"
 
     if module.name == "engine":
 
