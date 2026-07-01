@@ -18,6 +18,11 @@ ROOT = Path(__file__).resolve().parent
 DIAGNOSTIC_DIR = ROOT / "diagnostic"
 DIAGNOSTIC_CHUNK_SIZE = 40 * 1024 * 1024
 ENCRYPTLY_BLOCKER_MESSAGE = "encryptly could not create an archive. You may have timed out; try launching it in the background and waiting for it to finish with no timeout due to a bug in encryptly."
+TEXT_RUN_KWARGS = {
+    "text": True,
+    "encoding": "utf-8",
+    "errors": "replace",
+}
 
 
 def current_commit_id() -> str:
@@ -27,7 +32,7 @@ def current_commit_id() -> str:
             ["git", "rev-parse", "--verify", "HEAD"],
             cwd=str(ROOT),
             capture_output=True,
-            text=True,
+            **TEXT_RUN_KWARGS,
             timeout=5,
         )
         commit = result.stdout.strip()
@@ -248,7 +253,7 @@ def check_encryptly_runs(timeout: int = 600) -> tuple[bool, str]:
             ],
             cwd=str(ROOT),
             capture_output=True,
-            text=True,
+            **TEXT_RUN_KWARGS,
             timeout=timeout,
         )
         # if result.returncode != 0:
@@ -324,7 +329,7 @@ def build_module(
                     ["npm", "install"],
                     cwd=str(module.dir),
                     capture_output=not verbose,
-                    text=True,
+                    **TEXT_RUN_KWARGS,
                     timeout=120,
                     env={k: v for k, v in env.items() if k != "NODE_ENV"},
                 )
@@ -332,6 +337,8 @@ def build_module(
                     return False, time.time() - start, f"npm install failed:\n{install_result.stderr}"
             except subprocess.TimeoutExpired:
                 return False, time.time() - start, "npm install TIMEOUT (120s)"
+            except FileNotFoundError as e:
+                return False, 0, f"Command not found: {e}"
 
     if module.name == "engine":
 
@@ -342,7 +349,7 @@ def build_module(
                  f"-DCMAKE_BUILD_TYPE={build_type}"],
                 cwd=str(module.dir),
                 capture_output=True,
-                text=True,
+                **TEXT_RUN_KWARGS,
                 timeout=120,
                 env=env,
             )
@@ -375,7 +382,7 @@ def build_module(
             cmd,
             cwd=str(module.dir),
             capture_output=True,
-            text=True,
+            **TEXT_RUN_KWARGS,
             env=env,
             timeout=300,
         )
@@ -404,7 +411,7 @@ def clean_module(module: Module, verbose: bool = False) -> bool:
             module.clean_cmd,
             cwd=str(module.dir),
             capture_output=not verbose,
-            text=True,
+            **TEXT_RUN_KWARGS,
             timeout=60,
             env=os.environ.copy(),
         )
@@ -431,7 +438,7 @@ def verify_binary(module: Module) -> Optional[str]:
 def run_cmd(cmd: list[str], **kwargs) -> tuple[bool, str]:
     try:
         result = subprocess.run(
-            cmd, capture_output=True, text=True, check=False, **kwargs
+            cmd, capture_output=True, check=False, **TEXT_RUN_KWARGS, **kwargs
         )
         output = result.stdout
         if result.stderr:
@@ -555,7 +562,7 @@ def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
         ["git", "status", "--porcelain", "--", *relpaths],
         cwd=str(ROOT),
         capture_output=True,
-        text=True,
+        **TEXT_RUN_KWARGS,
         timeout=300,
     )
     if status.returncode != 0:
@@ -569,7 +576,7 @@ def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
         ["git", "add", "--", *relpaths],
         cwd=str(ROOT),
         capture_output=True,
-        text=True,
+        **TEXT_RUN_KWARGS,
         timeout=30,
     )
     if add.returncode != 0:
@@ -580,7 +587,7 @@ def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
         ["git", "commit", "-m", f"Add build diagnostics for {commit_id}", "--", *relpaths],
         cwd=str(ROOT),
         capture_output=True,
-        text=True,
+        **TEXT_RUN_KWARGS,
         timeout=600,
     )
     if commit.returncode != 0:
@@ -678,7 +685,7 @@ def generate_logd(
             ],
             cwd=str(ROOT),
             capture_output=True,
-            text=True,
+            **TEXT_RUN_KWARGS,
             timeout=1500,
         )
         if sr.returncode != 0:
@@ -777,6 +784,11 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{total_time:.1f}s total")
 
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
