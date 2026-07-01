@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-07-01T01:59:53.503367+00:00",
+  "commit": "ce3bf1cd",
+  "diagnostic_logd": "diagnostic/build-ce3bf1cd.logd",
+  "diagnostic_logd_error": null,
+  "chunked": false,
+  "chunk_size_bytes": null,
+  "password": "c592cd57ca7974d52a73",
+  "decrypt_command": "encryptly unpack diagnostic/build-ce3bf1cd.logd <outdir> --password c592cd57ca7974d52a73",
+  "total_modules": 1,
+  "passed": 1,
+  "failed": 0,
+  "modules": [
+    {
+      "name": "docs-bounty",
+      "status": "PASS",
+      "elapsed_seconds": 0.0,
+      "artifact": null,
+      "output": "Doc-only PR: CI diagnostic bundle"
+    }
+  ],
+  "pr_note": "Include this JSON diagnostic report and diagnostic/build-ce3bf1cd.logd in your PR. Maintainers may ask you to remove these diagnostic artifacts before merging."
+}
