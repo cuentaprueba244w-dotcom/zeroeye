@@ -428,7 +428,7 @@ def verify_binary(module: Module) -> Optional[str]:
         return str(path)
     return None
 
-def run_cmd(cmd: list[str], **kwargs) -> tuple[bool, str]:
+def run_cmd(cmd: list[str], **kwargs: object) -> tuple[bool, str]:
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, check=False, **kwargs
