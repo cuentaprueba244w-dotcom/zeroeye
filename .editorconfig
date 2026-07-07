@@ -1,0 +1,65 @@
+# EditorConfig is awesome: https://EditorConfig.org
+# WARNING: This file is managed by automation. Format checker enforces compliance.
+
+# top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 120
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.{json,json5}]
+indent_size = 2
+
+[*.{toml}]
+indent_size = 4
+
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+max_line_length = 80
+
+[*.{ts,tsx,js,jsx}]
+indent_size = 2
+
+[*.{html,css,scss}]
+indent_size = 2
+
+[*.go]
+indent_style = tab
+indent_size = 8
+
+[*.rs]
+indent_size = 4
+
+[*.java]
+indent_size = 4
+
+[*.sol]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+indent_size = 4
+
+[{*.sh,*.bash}]
+indent_size = 2
+
+[*.sql]
+indent_size = 2
+
+[*.gradle]
+indent_size = 4
+
+[*.xml]
+indent_size = 4
+
+[*.gradle.kts]
+indent_size = 4
