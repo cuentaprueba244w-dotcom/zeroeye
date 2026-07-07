@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-07-07T10:36:40.964099+00:00",
+  "commit": "04dc1623",
+  "diagnostic_logd": "diagnostic/build-04dc1623.logd",
+  "diagnostic_logd_error": null,
+  "message_blocker": null,
+  "chunked": false,
+  "chunk_size_bytes": null,
+  "password": "893bb8da137d482606c6",
+  "decrypt_command": "encryptly unpack diagnostic/build-04dc1623.logd <outdir> --password 893bb8da137d482606c6",
+  "total_modules": 1,
+  "passed": 1,
+  "failed": 0,
+  "modules": [
+    {
+      "name": "frontend",
+      "status": "PASS",
+      "elapsed_seconds": 18.83,
+      "artifact": "/tmp/zeroeye/frontend/dist",
+      "output": "> tent-frontend@0.0.0 build\n> tsc -b && vite build\n\nvite v6.4.3 building for production...\ntransforming...\n\u2713 100 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.62 kB \u2502 gzip:  0.34 kB\ndist/assets/state-BkjSKDbY.js     8.91 kB \u2502 gzip:  3.54 kB \u2502 map:    57.15 kB\ndist/assets/vendor-CREcWLHI.js   48.93 kB \u2502 gzip: 17.25 kB \u2502 map:   481.27 kB\ndist/assets/index-CyxcoTyU.js   231.32 kB \u2502 gzip: 72.16 kB \u2502 map: 1,044.42 kB\n\u2713 built in 5.19s"
+    }
+  ],
+  "pr_note": "Include the encrypted diagnostic logd artifact(s): diagnostic/build-04dc1623.logd. The encrypted .logd is the required diagnostic content for PR review; this JSON file is metadata. Maintainers may ask you to remove these diagnostic artifacts before merging."
+}
