@@ -12,7 +12,7 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 ROOT = Path(__file__).resolve().parent
 DIAGNOSTIC_DIR = ROOT / "diagnostic"
@@ -490,7 +490,7 @@ def build_diagnostic_report(
     logd_error: Optional[str] = None,
     chunked: bool = False,
     message_blocker: Optional[str] = None,
-) -> dict:
+) -> dict[str, Any]:
     diagnostic_logd: Optional[str | list[str]]
     if not logd_relpaths:
         diagnostic_logd = None
@@ -747,7 +747,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]) -> None:
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,7 +776,7 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -906,3 +906,4 @@ Diagnostic bundle:
 
 if __name__ == "__main__":
     sys.exit(main())
+
