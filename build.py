@@ -747,7 +747,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]) -> None:
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,8 +776,8 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
-    parser = argparse.ArgumentParser(
+def main() -> int:
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
@@ -815,7 +815,7 @@ Diagnostic bundle:
         help="List available modules and exit",
     )
 
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
 
     print(f"\n  {color('Tent of Trials: building', Colors.CYAN)}")
     print(f"  Working directory: {ROOT}")
