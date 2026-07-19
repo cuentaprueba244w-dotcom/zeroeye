@@ -428,7 +428,7 @@ def verify_binary(module: Module) -> Optional[str]:
         return str(path)
     return None
 
-def run_cmd(cmd: list[str], **kwargs) -> tuple[bool, str]:
+def run_cmd(cmd: list[str], **kwargs: str | int | bool | None | dict[str, str]) -> tuple[bool, str]:
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, check=False, **kwargs
@@ -490,7 +490,7 @@ def build_diagnostic_report(
     logd_error: Optional[str] = None,
     chunked: bool = False,
     message_blocker: Optional[str] = None,
-) -> dict:
+) -> dict[str, str | bool | int | list[dict[str, str | float | None]] | None]:
     diagnostic_logd: Optional[str | list[str]]
     if not logd_relpaths:
         diagnostic_logd = None
@@ -538,7 +538,7 @@ def build_diagnostic_report(
     return report
 
 
-def write_diagnostic_report(metadata_path: Path, report: dict) -> None:
+def write_diagnostic_report(metadata_path: Path, report: dict[str, str | bool | int | list[dict[str, str | float | None]] | None]) -> None:
     metadata_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"    {color('✓', Colors.GREEN)} {metadata_path.relative_to(ROOT)} created")
 
@@ -747,7 +747,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]) -> None:
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,7 +776,7 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,

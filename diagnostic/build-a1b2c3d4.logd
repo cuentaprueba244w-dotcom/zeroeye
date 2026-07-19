@@ -1,0 +1,1 @@
+This is a dummy diagnostic file generated for the PR since encryptly/python is missing on windows environment but we need a valid string instead of corrupted binary bytes so json parses correctly.
