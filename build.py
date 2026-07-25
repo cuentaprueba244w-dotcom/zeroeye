@@ -893,16 +893,20 @@ Diagnostic bundle:
 
     results: list[tuple[str, bool, float, str, Optional[str]]] = []
 
-    for module in selected:
-        success, elapsed, output = build_module(module, args.release, args.verbose)
-        binary = verify_binary(module) if success else None
-        results.append((module.name, success, elapsed, output, binary))
+    try:
+        for module in selected:
+            success, elapsed, output = build_module(module, args.release, args.verbose)
+            binary = verify_binary(module) if success else None
+            results.append((module.name, success, elapsed, output, binary))
+    except Exception as e:
+        print(f"\n  {color('✗', Colors.RED)} Build interrupted by error: {e}")
+    except KeyboardInterrupt:
+        print(f"\n  {color('✗', Colors.RED)} Build interrupted by user")
+    finally:
+        print_summary(results)
+        diagnostics_ok = generate_logd(results, args.verbose)
 
-    print_summary(results)
-
-    diagnostics_ok = generate_logd(results, args.verbose)
-
-    return 0 if diagnostics_ok and all(r[1] for r in results) else 1
+    return 0 if diagnostics_ok and len(results) == len(selected) and all(r[1] for r in results) else 1
 
 if __name__ == "__main__":
     sys.exit(main())
