@@ -12,7 +12,8 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+# Type alias for build result tuples used throughout the script
+type BuildResult = tuple[str, bool, float, str, str | None]
 
 ROOT = Path(__file__).resolve().parent
 DIAGNOSTIC_DIR = ROOT / "diagnostic"
@@ -76,8 +77,8 @@ class Module:
     dir: Path
     build_cmd: list[str]
     clean_cmd: list[str]
-    build_dir: Optional[Path] = None
-    env: Optional[dict[str, str]] = None
+    build_dir: Path | None = None
+    env: dict[str, str] | None = None
 
 MODULES = [
     Module(
@@ -176,7 +177,7 @@ ENCRYPTLY_BINARIES = {
 LEGACY_ENCRYPTLY_BIN = ENCRYPTLY_DIR / "encryptly"
 
 
-def _normalize_arch(machine: str) -> Optional[str]:
+def _normalize_arch(machine: str) -> str | None:
     machine = machine.lower()
     if machine in {"x86_64", "amd64"}:
         return "x64"
@@ -185,7 +186,7 @@ def _normalize_arch(machine: str) -> Optional[str]:
     return None
 
 
-def _normalize_os() -> Optional[str]:
+def _normalize_os() -> str | None:
     system = platform.system().lower()
     if system == "linux":
         return "linux"
@@ -196,7 +197,7 @@ def _normalize_os() -> Optional[str]:
     return None
 
 
-def detect_encryptly_platform() -> Optional[str]:
+def detect_encryptly_platform() -> str | None:
     os_name = _normalize_os()
     arch = _normalize_arch(platform.machine())
     if os_name is None or arch is None:
@@ -204,7 +205,7 @@ def detect_encryptly_platform() -> Optional[str]:
     return f"{os_name}-{arch}"
 
 
-def get_encryptly_bin() -> Optional[Path]:
+def get_encryptly_bin() -> Path | None:
     target = detect_encryptly_platform()
     if target is not None:
         binary = ENCRYPTLY_BINARIES.get(target)
@@ -413,7 +414,7 @@ def clean_module(module: Module, verbose: bool = False) -> bool:
         print(f"    {color('✗', Colors.RED)} Clean failed: {e}")
         return False
 
-def verify_binary(module: Module) -> Optional[str]:
+def verify_binary(module: Module) -> str | None:
     if module.build_dir is None:
         return None
     path = module.build_dir
@@ -483,15 +484,15 @@ def collect_system_info() -> str:
 
 
 def build_diagnostic_report(
-    results: list[tuple[str, bool, float, str, Optional[str]]],
+    results: list[BuildResult],
     commit_id: str,
-    logd_relpaths: Optional[list[str]] = None,
-    password: Optional[str] = None,
-    logd_error: Optional[str] = None,
+    logd_relpaths: list[str] | None = None,
+    password: str | None = None,
+    logd_error: str | None = None,
     chunked: bool = False,
-    message_blocker: Optional[str] = None,
-) -> dict:
-    diagnostic_logd: Optional[str | list[str]]
+    message_blocker: str | None = None,
+) -> dict[str, object]:
+    diagnostic_logd: str | list[str] | None
     if not logd_relpaths:
         diagnostic_logd = None
     elif len(logd_relpaths) == 1:
@@ -538,7 +539,7 @@ def build_diagnostic_report(
     return report
 
 
-def write_diagnostic_report(metadata_path: Path, report: dict) -> None:
+def write_diagnostic_report(metadata_path: Path, report: dict[str, object]) -> None:
     metadata_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"    {color('✓', Colors.GREEN)} {metadata_path.relative_to(ROOT)} created")
 
@@ -593,7 +594,7 @@ def commit_diagnostic_artifacts(paths: list[Path], commit_id: str) -> bool:
 
 
 def generate_logd(
-    results: list[tuple[str, bool, float, str, Optional[str]]],
+    results: list[BuildResult],
     verbose: bool = False,
 ) -> bool:
     logd_path, metadata_path, commit_id = diagnostic_paths_for_commit()
@@ -747,7 +748,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: list[BuildResult]) -> None:
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,7 +777,7 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -891,7 +892,7 @@ Diagnostic bundle:
 
     print(f"\n  {color(f'Building {len(selected)} module(s) | release={args.release}', Colors.GRAY)}")
 
-    results: list[tuple[str, bool, float, str, Optional[str]]] = []
+    results: list[BuildResult] = []
 
     for module in selected:
         success, elapsed, output = build_module(module, args.release, args.verbose)
