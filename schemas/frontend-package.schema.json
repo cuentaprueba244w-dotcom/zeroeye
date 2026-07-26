@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cuentaprueba244w-dotcom/zeroeye/blob/main/schemas/frontend-package.schema.json",
+  "title": "Frontend Package Configuration",
+  "description": "Schema for the Tent of Trials frontend package.json file",
+  "type": "object",
+  "required": [
+    "name",
+    "private",
+    "version",
+    "type",
+    "scripts",
+    "dependencies",
+    "devDependencies"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name"
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Whether the package is private"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "module",
+        "commonjs"
+      ],
+      "description": "Module system type"
+    },
+    "scripts": {
+      "type": "object",
+      "description": "NPM scripts for dev, build, and preview",
+      "required": [
+        "dev",
+        "build"
+      ],
+      "properties": {
+        "dev": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        },
+        "preview": {
+          "type": "string"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Runtime dependencies with version ranges",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[\\^~]?\\d+"
+      }
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Development dependencies with version ranges",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[\\^~]?\\d+"
+      }
+    }
+  }
+}
