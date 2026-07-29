@@ -1,3 +1,13 @@
+<div align="center">
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/cuentaprueba244w-dotcom/zeroeye/diagnostic-build-log.yml?style=flat-square&branch=main)](https://github.com/cuentaprueba244w-dotcom/zeroeye/actions/workflows/diagnostic-build-log.yml)
+[![Code Style](https://img.shields.io/badge/code%20style-editorconfig-orange?style=flat-square)](https://editorconfig.org/)
+[![License](https://img.shields.io/github/license/cuentaprueba244w-dotcom/zeroeye?style=flat-square)](https://github.com/cuentaprueba244w-dotcom/zeroeye/blob/main/README.md#code-licenses)
+[![Languages](https://img.shields.io/github/languages/count/cuentaprueba244w-dotcom/zeroeye?style=flat-square)](https://github.com/cuentaprueba244w-dotcom/zeroeye)
+[![Last Commit](https://img.shields.io/github/last-commit/cuentaprueba244w-dotcom/zeroeye?style=flat-square)](https://github.com/cuentaprueba244w-dotcom/zeroeye/commits/main)
+
+</div>
+
 # Tent of Trials
 
 Trading and risk platform.
