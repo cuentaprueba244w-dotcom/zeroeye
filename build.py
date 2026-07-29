@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 import argparse
 import datetime
 import getpass
@@ -294,7 +296,7 @@ def check_prerequisites() -> list[str]:
         "ghc": "GHC (Haskell)",
     }
 
-    missing = []
+    missing: list[str] = []
     for cmd, label in required.items():
         if shutil.which(cmd) is None:
             missing.append(f"{label} ({cmd})")
@@ -351,7 +353,7 @@ def build_module(
         except FileNotFoundError as e:
             return False, 0, f"Command not found: {e}"
         if cfg_result.returncode != 0:
-            output_lines = []
+            output_lines: list[str] = []
             if cfg_result.stdout:
                 output_lines.append(cfg_result.stdout.strip())
             if cfg_result.stderr:
@@ -428,7 +430,7 @@ def verify_binary(module: Module) -> Optional[str]:
         return str(path)
     return None
 
-def run_cmd(cmd: list[str], **kwargs) -> tuple[bool, str]:
+def run_cmd(cmd: list[str], **kwargs: str | int | float | bool | dict[str, str] | None) -> tuple[bool, str]:
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, check=False, **kwargs
@@ -654,7 +656,7 @@ def generate_logd(
             "\n".join(summary_lines), encoding="utf-8"
         )
 
-        log_lines = []
+        log_lines: list[str] = []
         for name, success, elapsed, output, binary in results:
             log_lines.append(
                 f"\n{'=' * 50}\n{name} ({'PASS' if success else 'FAIL'}, {elapsed:.2f}s)\n"
@@ -747,7 +749,7 @@ def generate_logd(
         shutil.rmtree(workspace, ignore_errors=True)
 
 
-def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
+def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]) -> None:
     print(f"  {color('Build Summary', Colors.BOLD)}")
 
     total = len(results)
@@ -776,7 +778,7 @@ def print_summary(results: list[tuple[str, bool, float, str, Optional[str]]]):
           f"{color(str(failed) + ' failed', Colors.RED)}, "
           f"{total_time:.1f}s total")
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Tent of Trials  -  Multi-Language Build System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
