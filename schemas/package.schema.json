@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/cuentaprueba244w-dotcom/zeroeye/schemas/package.schema.json",
+  "title": "Frontend Package Configuration",
+  "description": "JSON Schema for the frontend package.json configuration file, validating the structure and required fields for the Tent of Trials frontend application.",
+  "type": "object",
+  "required": [
+    "name",
+    "version",
+    "scripts",
+    "dependencies"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the package.",
+      "minLength": 1,
+      "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+    },
+    "version": {
+      "type": "string",
+      "description": "The SemVer version string of the package.",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[a-zA-Z0-9.]+)?$"
+    },
+    "type": {
+      "type": "string",
+      "description": "The module type for the package.",
+      "enum": ["module", "commonjs"]
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Whether the package is private (not published to a registry)."
+    },
+    "scripts": {
+      "type": "object",
+      "description": "A map of script names to command strings.",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "properties": {
+        "dev": {
+          "type": "string",
+          "description": "Development server start command."
+        },
+        "build": {
+          "type": "string",
+          "description": "Production build command."
+        },
+        "preview": {
+          "type": "string",
+          "description": "Preview build command."
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Production dependencies keyed by package name.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[\\^~]?[0-9]+\\.[0-9]+\\.[0-9]+"
+      },
+      "properties": {
+        "react": {
+          "type": "string",
+          "description": "React library version."
+        },
+        "react-dom": {
+          "type": "string",
+          "description": "React DOM renderer version."
+        },
+        "react-router-dom": {
+          "type": "string",
+          "description": "React Router DOM version."
+        },
+        "zustand": {
+          "type": "string",
+          "description": "Zustand state management version."
+        },
+        "immer": {
+          "type": "string",
+          "description": "Immer immutable state utility version."
+        },
+        "lightweight-charts": {
+          "type": "string",
+          "description": "Lightweight Charts library version."
+        },
+        "@tanstack/react-query": {
+          "type": "string",
+          "description": "TanStack React Query version."
+        },
+        "uuid": {
+          "type": "string",
+          "description": "UUID generation library version."
+        }
+      }
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "Development dependencies keyed by package name.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[\\^~]?[0-9]+\\.[0-9]+\\.[0-9]+"
+      },
+      "properties": {
+        "typescript": {
+          "type": "string",
+          "description": "TypeScript compiler version."
+        },
+        "vite": {
+          "type": "string",
+          "description": "Vite build tool version."
+        },
+        "@vitejs/plugin-react": {
+          "type": "string",
+          "description": "Vite React plugin version."
+        },
+        "@types/node": {
+          "type": "string",
+          "description": "Node.js type definitions version."
+        },
+        "@types/react": {
+          "type": "string",
+          "description": "React type definitions version."
+        },
+        "@types/react-dom": {
+          "type": "string",
+          "description": "React DOM type definitions version."
+        }
+      }
+    }
+  }
+}
