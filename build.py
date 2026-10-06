@@ -231,7 +231,7 @@ def check_encryptly_runs(timeout: int = 600) -> tuple[bool, str]:
 
     workspace = Path.home() / ".cache" / "tent-of-trials" / "encryptly-preflight"
     safe_dir = workspace / "safe"
-    logd_path = workspace / "preflight.logd"
+    logd_path = Path.home() / ".cache" / "tent-of-trials" / "encryptly-preflight.logd"
     try:
         shutil.rmtree(workspace, ignore_errors=True)
         safe_dir.mkdir(parents=True, exist_ok=True)
@@ -249,6 +249,7 @@ def check_encryptly_runs(timeout: int = 600) -> tuple[bool, str]:
             cwd=str(ROOT),
             capture_output=True,
             text=True,
+            stdin=subprocess.DEVNULL,
             timeout=timeout,
         )
         # if result.returncode != 0:
@@ -679,6 +680,7 @@ def generate_logd(
             cwd=str(ROOT),
             capture_output=True,
             text=True,
+            stdin=subprocess.DEVNULL,
             timeout=1500,
         )
         if sr.returncode != 0:
@@ -893,16 +895,20 @@ Diagnostic bundle:
 
     results: list[tuple[str, bool, float, str, Optional[str]]] = []
 
-    for module in selected:
-        success, elapsed, output = build_module(module, args.release, args.verbose)
-        binary = verify_binary(module) if success else None
-        results.append((module.name, success, elapsed, output, binary))
+    try:
+        for module in selected:
+            success, elapsed, output = build_module(module, args.release, args.verbose)
+            binary = verify_binary(module) if success else None
+            results.append((module.name, success, elapsed, output, binary))
+    except Exception as e:
+        print(f"\n  Build failed with exception: {e}")
+    finally:
+        print_summary(results)
+        diagnostics_ok = generate_logd(results, args.verbose)
+        if not diagnostics_ok:
+            return 1
 
-    print_summary(results)
-
-    diagnostics_ok = generate_logd(results, args.verbose)
-
-    return 0 if diagnostics_ok and all(r[1] for r in results) else 1
+    return 0 if all(r[1] for r in results) else 1
 
 if __name__ == "__main__":
     sys.exit(main())
