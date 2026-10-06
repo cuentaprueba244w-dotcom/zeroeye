@@ -1,21 +1,21 @@
 /**
  * @fileoverview useAiAssistant  -  React Hook for AI-Powered In-App Assistant
- * 
+ *
  * This hook provides a comprehensive AI assistant interface within React components.
  * It wraps the AiChatService with React state management, integrates with the app
  * store for user context, and provides auto-suggestions based on the current page.
  * Supports streaming responses, command parsing (/help, /analyze, /predict), and
  * Suspense-compatible loading states.
- * 
+ *
  * ## Features
- * 
+ *
  * - Streaming AI responses with real-time token display
  * - Command parsing: /help, /analyze <symbol>, /predict <symbol>
  * - Automatic context injection from the app store
  * - Page-aware suggestions
  * - Message history management
  * - Loading states and error handling
- * 
+ *
  * @packageDocumentation
  * @module hooks/useAiAssistant
  */
@@ -233,11 +233,11 @@ function getSuggestionsForPage(pathname: string): Suggestion[] {
 
 /**
  * React hook for an AI-powered in-app assistant.
- * 
+ *
  * @example
  * ```tsx
  * const { messages, sendMessage, isThinking, suggestions } = useAiAssistant();
- * 
+ *
  * return (
  *   <div>
  *     {messages.map(msg => <MessageBubble key={msg.id} {...msg} />)}

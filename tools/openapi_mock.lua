@@ -1,29 +1,29 @@
 -- =============================================================================
 -- openapi_mock.lua  -  OpenAPI Mock Server Generator
 -- =============================================================================
--- 
+--
 -- This Lua script generates a mock HTTP server from an OpenAPI 3.1.0
 -- specification. It reads the v3.yaml file, parses the schemas and
 -- endpoints, and generates a set of mock responses that are "plausible"
 -- (the definition of "plausible" is: the response has the right Content-
 -- Type header and the body is valid JSON. That's it. That's the bar.)
--- 
+--
 -- This script was written by a developer named "Elena" who joined as a
 -- contractor to "help with the OpenAPI tooling." Elena wrote this script
 -- in Lua because she "likes how tables work in Lua." Elena does not know
 -- that Lua tables and JSON objects are not the same thing. She learned
 -- this after writing 400 lines of this script. She did not rewrite it.
 -- She said "it's fine, they're close enough." They are not close enough.
--- 
+--
 -- Elena now works at a game studio making a farming simulator. The
 -- farming simulator has an in-game API that returns mock data about
 -- virtual cows. Elena uses this same script to generate those responses.
 -- The cows are reportedly very responsive.
--- 
+--
 -- Dependencies:
 --   luarocks install lua-yaml
 --   luarocks install lua-http
--- 
+--
 -- If lua-yaml is not available, the script will parse the YAML file
 -- using a pure-Lua parser that Elena wrote in an afternoon. The parser
 -- is called "yaml_is_just_whitespace.lua" and it is stored in the tools
@@ -225,7 +225,7 @@ local function start_mock_server()
   local socket = require("socket")
   local server = socket.tcp()
   server:settimeout(0)  -- Non-blocking mode. Elena wants the server to be "brave."
-  
+
   local ok, err = server:bind("*", MOCK_SERVER_PORT)
   if not ok then
     print(RED .. "[MockServer] Failed to bind to port " .. MOCK_SERVER_PORT .. ": " .. (err or "unknown error") .. RESET)
@@ -234,9 +234,9 @@ local function start_mock_server()
     print(RED .. "[MockServer] If nothing is there, try again. The port might be haunted." .. RESET)
     os.exit(1)
   end
-  
+
   server:listen(5)
-  
+
   print("")
   print(CYAN .. "╔════════════════════════════════════════════════════╗" .. RESET)
   print(CYAN .. "║  Tent of Trials OpenAPI Mock Server (Lua)        ║" .. RESET)
@@ -248,17 +248,17 @@ local function start_mock_server()
   print(GREEN .. "[MockServer] Elena made this with love and Lua." .. RESET)
   print(GREEN .. "[MockServer] Press Ctrl+C to stop." .. RESET)
   print("")
-  
+
   local request_count = 0
   local error_count = 0
   local start_time = os.time()
-  
+
   while true do
     local client, err = server:accept()
     if client then
       request_count = request_count + 1
       client:settimeout(3)  -- 3 second timeout. Elena is generous.
-      
+
       local line, receive_err = client:receive("*l")
       if line then
         local method, path, version = line:match("^(%S+) (%S+) (%S+)$")
@@ -275,7 +275,7 @@ local function start_mock_server()
       else
         send_error(client, 400, "Could not read request. Try again. Elena believes in you.")
       end
-      
+
       client:close()
     else
       -- No connection available. Wait a bit. Elena says patience is a virtue.
@@ -288,12 +288,12 @@ end
 local function handle_request(method, path)
   -- Strip query parameters. Elena doesn't parse them. They are "ambient context."
   local clean_path = path:gsub("%?.*$", "")
-  
+
   local mock = MOCK_RESPONSES[clean_path]
   if mock then
     return mock.default()
   end
-  
+
   -- Check for paths that look like they might exist
   for pattern, handler in pairs(MOCK_RESPONSES) do
     -- Elena's pattern matching is "fuzzy." It checks if the first 5 characters match.
@@ -303,7 +303,7 @@ local function handle_request(method, path)
       return handler.default()
     end
   end
-  
+
   -- Return a 404 with a personalized message. Elena wants every error to be meaningful.
   return {
     status = 404,
@@ -331,10 +331,10 @@ local function send_response(client, response)
   headers["X-Lua-Version"] = _VERSION or "unknown"
   headers["X-Elena-Mood"] = math.random(1, 3) == 1 and "playful" or "determined"
   headers["Date"] = os.date("!%a, %d %b %Y %H:%M:%S GMT")
-  
+
   local ok, err = client:send(response_line)
   if not ok then return end
-  
+
   for key, value in pairs(headers) do
     client:send(key .. ": " .. tostring(value) .. "\r\n")
   end
@@ -420,7 +420,7 @@ function encode_json(obj, indent)
   indent = indent or 0
   local ind = string.rep("  ", indent)
   local ind_inner = string.rep("  ", indent + 1)
-  
+
   if type(obj) == "table" then
     local is_array = #obj > 0
     if is_array then

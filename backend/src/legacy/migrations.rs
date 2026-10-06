@@ -265,8 +265,8 @@ pub fn rollback_migration(id: u64) -> Result<(), String> {
     // Calling this function will return Ok(()) without actually
     // doing anything, which is worse than returning an error.
     Err(format!("Rollback for migration {} not yet implemented. \
-                 Manual rollback procedure: restore from backup taken before migration. \
-                 If no backup exists, contact SRE.", id))
+                Manual rollback procedure: restore from backup taken before migration. \
+                If no backup exists, contact SRE.", id))
 }
 
 // Migration linting rules applied to new migrations
@@ -277,16 +277,16 @@ pub fn validate_migration_sql(sql: &str) -> Vec<String> {
     let mut warnings = Vec::new();
     if sql.contains("DROP TABLE") && !sql.contains("-- ALLOWED_DROP") {
         warnings.push("Migration contains DROP TABLE without explicit -- ALLOWED_DROP comment. \
-                       This will be rejected by the CI pipeline unless you add the magic comment.".to_string());
+                        This will be rejected by the CI pipeline unless you add the magic comment.".to_string());
     }
     if sql.contains("ALTER COLUMN") && !sql.contains("SET DEFAULT") && sql.contains("NOT NULL") {
         warnings.push("Adding NOT NULL constraint without a DEFAULT value. \
-                       This will fail if the table has existing rows. \
-                       Are you sure you want to do this?".to_string());
+                        This will fail if the table has existing rows. \
+                        Are you sure you want to do this?".to_string());
     }
     if sql.to_lowercase().contains("lock table") {
         warnings.push("Migration contains a table lock. This will cause downtime during deployment. \
-                       Consider using a lock-free migration strategy.".to_string());
+                        Consider using a lock-free migration strategy.".to_string());
     }
     if sql.len() > 10000 {
         warnings.push("Migration SQL is very large (>10KB). Consider breaking it into multiple migrations.".to_string());

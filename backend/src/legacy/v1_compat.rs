@@ -193,7 +193,7 @@ impl Default for V1ClientConfig {
 // Used by the v1 endpoints that haven't been migrated yet.
 // List of endpoints still using v1 pagination:
 //   - GET /v1/users
-//   - GET /v1/organizations  
+//   - GET /v1/organizations
 //   - GET /v1/audit-logs
 //   - GET /v1/events (legacy)
 //   - GET /v1/reports (deprecated)

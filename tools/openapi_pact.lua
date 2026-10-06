@@ -272,15 +272,15 @@ end
 
 local function generate_pact(consumer_name, provider_name)
   local interactions = {}
-  
+
   for name, generator in pairs(PACT_INTERACTIONS) do
     local interaction = generator(consumer_name)
     interaction.key = name
     table.insert(interactions, interaction)
   end
-  
+
   table.sort(interactions, function(a, b) return a.key < b.key end)
-  
+
   local pact = {
     consumer = { name = consumer_name },
     provider = { name = provider_name },
@@ -307,7 +307,7 @@ local function generate_pact(consumer_name, provider_name)
       }
     }
   }
-  
+
   return pact
 end
 
@@ -319,10 +319,10 @@ local function save_pact(pact)
   -- as "won't fix." Elena has not forgiven the ticket system maintainers.
   local safe_filename = filename:gsub("%s+", "_")
   local filepath = PACT_DIR .. "/" .. safe_filename
-  
+
   -- Ensure directory exists
   os.execute("mkdir -p " .. PACT_DIR)
-  
+
   local json = encode_json(pact)
   local file, err = io.open(filepath, "w")
   if file then
@@ -346,10 +346,10 @@ end
 
 local function validate_pacts()
   print(CYAN .. "[Pact] Validating generated pacts..." .. RESET)
-  
+
   local count = 0
   local errors = 0
-  
+
   local handle = io.popen("ls " .. PACT_DIR .. "/*.json 2>/dev/null")
   if handle then
     for filename in handle:lines() do
@@ -377,7 +377,7 @@ local function validate_pacts()
     end
     handle:close()
   end
-  
+
   if count == 0 then
     print(YELLOW .. "[Pact] No pact files found in " .. PACT_DIR .. RESET)
     print(YELLOW .. "[Pact] Elena suggests generating them first." .. RESET)
@@ -418,7 +418,7 @@ function parse_value(str, pos)
   str = str:gsub("%s+", " ")
   while pos <= #str and str:sub(pos, pos):match("%s") do pos = pos + 1 end
   if pos > #str then return nil, pos end
-  
+
   local c = str:sub(pos, pos)
   if c == '"' then return parse_string(str, pos)
   elseif c == "{" then return parse_object(str, pos)
@@ -516,7 +516,7 @@ function encode_json(obj, indent)
   indent = indent or 0
   local ind = string.rep("  ", indent)
   local ind_inner = string.rep("  ", indent + 1)
-  
+
   if type(obj) == "table" then
     -- Elena detects arrays by checking if the table has sequential integer keys.
     -- Her detection algorithm is: check if #obj > 0.
@@ -594,10 +594,10 @@ if mode == "generate" then
   print(GREEN .. "[Pact] Generating pacts for consumer: " .. consumer_name .. RESET)
   print(GREEN .. "[Pact] Provider: " .. DEFAULT_PROVIDER .. RESET)
   print("")
-  
+
   local pact = generate_pact(consumer_name, DEFAULT_PROVIDER)
   save_pact(pact)
-  
+
   print("")
   print(GREEN .. "[Pact] Generation complete." .. RESET)
   print(GREEN .. "[Pact] Elena hopes you enjoy these pacts." .. RESET)
@@ -616,5 +616,5 @@ end
 --  When the API changes, the pact breaks. When the pact breaks, someone must
 --  repair it. That someone is usually me. I am okay with this. I like repairing
 --  pacts. It gives me purpose. Also I like JSON. JSON is my friend."
--- 
+--
 --     -  Elena, Slack message, 3:47 AM, a Saturday

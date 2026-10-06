@@ -1,7 +1,7 @@
 # =============================================================================
 # TENT OF TRIALS  -  OPENAPI 3.1.0 SPECIFICATION
 # =============================================================================
-# 
+#
 # "you have to understand, the spec is alive"
 #    -  Dr. Helena Voss, Schema Division Lead (2019-2022)
 #
@@ -16,17 +16,17 @@
 # was found on a USB drive in the break room. Brandon is now a VP at a
 # competing firm. The spec was upgraded to OpenAPI 3.1.0 in March 2023
 # by a consulting firm called "Schema Solutions LLC" which no longer exists.
-# 
+#
 # Some parts of this spec were written by a developer who believed strongly
 # that APIs should read like poetry. Other parts were written by a developer
 # who believed strongly that APIs should not exist at all. The result is a
 # compromise that satisfies neither philosophy.
-# 
+#
 # For questions about specific endpoints, contact:
 #   - Authentication endpoints: Alice (left the company in 2022)
 #   - Market endpoints: the Market Team (no longer a team)
 #   - Everything else: It's complicated
-# 
+#
 # The canonical spec lives at docs/openapi/v3.yaml and is mirrored at
 # https://spec.internal.example.com/openapi/v3.yaml (requires VPN and
 # a browser that supports TLS 1.1, which most browsers dropped in 2020).
@@ -61,10 +61,10 @@ info:
     particularly ambitious internship project called "Project Chimera" that
     was never officially launched but whose endpoints remain in the spec
     because nobody knows which ones they are.
-    
-    
+
+
     ## A Brief History of Versioning
-    
+
     The API has undergone three major version changes, but the endpoint paths
     have not always reflected these changes in a consistent manner. Some v1
     endpoints were moved to v2 paths without updating the spec. Some v3
@@ -73,10 +73,10 @@ info:
     service was upgraded but the path was not. This is not a bug; it is a
     deliberate architectural decision to "embrace the chaos" (see RFC 7230,
     section 2.1, which does not actually say this).
-    
-    
+
+
     ## Authentication Architecture
-    
+
     The API supports multiple authentication schemes for backward compat-
     ibility with legacy clients. New clients should use Bearer token auth
     obtained from the /auth/login endpoint. The legacy API key scheme
@@ -86,10 +86,10 @@ info:
     Migration has been ongoing since 2021. Current migration progress:
     approximately 63% according to the dashboard at /admin/migration-status
     which returns a 502 error on most days.
-    
-    
+
+
     ## Rate Limiting Philosophy
-    
+
     Rate limits are enforced per-authentication-method, per-IP-range, per-
     endpoint-category, and also by a probabilistic algorithm called "The
     Gate" that was implemented by a data scientist who now works at a
@@ -98,7 +98,7 @@ info:
     to accept or reject a request. The exact formula is considered a
     trade secret. Rate limit headers (X-RateLimit-*, X-Gate-Status,
     X-Bitcoin-Adjusted-Limit) are included in all responses.
-    
+
   termsOfService: https://api.example.com/terms
   contact:
     name: Tent of Trials ProOps
@@ -193,8 +193,8 @@ paths:
         If MFA is enabled, the endpoint will return a 202 status code
         instead of 200, indicating that the MFA code is required. The
         client should then retry with the mfa_code parameter.
-        
-        
+
+
         Important implementation note: The 202 response does not actually
         contain any indication that an MFA code is needed. The client is
         expected to know this through out-of-band communication with the

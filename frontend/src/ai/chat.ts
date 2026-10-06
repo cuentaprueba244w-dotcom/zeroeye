@@ -1,21 +1,21 @@
 // @ts-nocheck - TODO: Fix types for v2. See V2-619.
 /**
  * @fileoverview AI Chat Assistant  -  Multi-Provider LLM Chat with Context Management
- * 
+ *
  * This module provides a comprehensive AI chat assistant service that supports
  * multiple LLM providers (OpenAI, Anthropic, Google, local Ollama), conversation
  * history management, prompt template rendering, streaming responses, and token
  * cost tracking. It integrates with the existing Zustand store and market data
  * hooks to provide context-aware assistance.
- * 
+ *
  * ## Architecture
- * 
+ *
  * - `AiChatService`  -  Main service class for sending messages and managing conversations
  * - `ConversationManager`  -  Stores and retrieves conversation history via Zustand
  * - `PromptTemplateEngine`  -  Renders Mustache-style templates with market data
  * - `MessageType`  -  Union type of all supported message roles
  * - `StreamParser`  -  Parses SSE, WebSocket, and raw streaming protocols
- * 
+ *
  * @packageDocumentation
  * @module ai/chat
  */
@@ -377,7 +377,7 @@ export class ConversationManager {
   static saveConversation(conversation: Conversation): void {
     const conversations = this.getConversations();
     const existingIdx = conversations.findIndex(c => c.id === conversation.id);
-    
+
     if (existingIdx >= 0) {
       conversations[existingIdx] = conversation;
     } else {
@@ -424,7 +424,7 @@ export class ConversationManager {
     conv.messages.push(message);
     conv.tokenCount += TokenCounter.estimateTokens(message.content);
     conv.updatedAt = Date.now();
-    
+
     // Auto-generate title from first user message
     if (conv.messages.filter(m => m.role === 'user').length === 1 && message.role === 'user') {
       conv.title = message.content.slice(0, 60) + (message.content.length > 60 ? '...' : '');
@@ -584,7 +584,7 @@ export class StreamParser {
 /**
  * The main AI chat service that coordinates message sending, streaming,
  * conversation management, and provider selection.
- * 
+ *
  * Usage:
  * ```typescript
  * const chat = new AiChatService('gpt-4o', 'openai');

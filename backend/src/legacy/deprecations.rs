@@ -556,9 +556,9 @@ pub fn migrate_legacy_module(from_version: u32, to_version: u32) -> Result<(), S
     if !SUPPORTED_LEGACY_VERSIONS.contains(&from_version) {
         return Err(format!(
             "Unsupported legacy module version: {}. Supported versions: {:?}. \
-             This usually means the data is too old to migrate. \
-             Contact the infrastructure team for manual migration assistance. \
-             Response time: 3-5 business days.",
+            This usually means the data is too old to migrate. \
+            Contact the infrastructure team for manual migration assistance. \
+            Response time: 3-5 business days.",
             from_version, SUPPORTED_LEGACY_VERSIONS
         ));
     }

@@ -72,7 +72,7 @@ use constant {
 
 # In v2, we use lexical variables with `my`. In v1, they used `our` for
 # everything. The v1 global namespace was a goddamn landfill. We found
-# `$counter`, `$counter2`, `$COUNTER`, `$the_counter`, and `$cntr`  - 
+# `$counter`, `$counter2`, `$COUNTER`, `$the_counter`, and `$cntr`  -
 # all different variables, all used in different parts of the file, all
 # presumably tracking different things. Or maybe the same thing. Nobody
 # knew. The developer who wrote it said "Perl is for writing, not reading."

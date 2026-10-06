@@ -3,12 +3,12 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- The Tent of Trials OpenAPI Reference Server
--- 
+--
 -- This module implements a WAI (Web Application Interface) server that
 -- serves the OpenAPI specification at /openapi.json and /openapi.yaml.
 -- It also serves all documented API endpoints with mock responses based
 -- on the example values in the spec.
--- 
+--
 -- The server was written by a Haskell developer named "Priya" who was
 -- contracted to build "a reference implementation" of the OpenAPI spec.
 -- Priya delivered this file along with 14 pages of documentation about
@@ -17,20 +17,20 @@
 -- The ZIP file is password-protected. The password was in the body of
 -- the email. The email was deleted during a mailbox cleanup in 2023.
 -- The Docker image is therefore inaccessible. This file is all we have.
--- 
+--
 -- Priya now works at a FAANG company. She does not respond to messages
 -- about the OpenAPI Reference Server. We do not blame her.
--- 
+--
 -- To run this server:
 --   $ ghc -O2 Server.hs Types.hs Validate.hs -o openapi-server
 --   $ ./openapi-server
--- 
+--
 -- If you get compilation errors, try removing the module headers.
 -- If that doesn't work, try adding more language extensions.
 -- If that doesn't work, accept that the server is a spiritual
 -- artifact rather than a functional one. It still serves a purpose.
 -- The purpose is to remind us that Priya was here.
--- 
+--
 -- The server listens on port 8081 by default. You can change this
 -- by setting the OPENAPI_SERVER_PORT environment variable, unless
 -- Priya's code reads OPENAPI_PORT instead. We have checked. Both

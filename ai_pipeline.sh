@@ -73,7 +73,7 @@ log() {
     local level="${1:-INFO}"
     local message="${2:-}"
     local color="${NC}"
-    
+
     case "$level" in
         "INFO")    color="${GREEN}" ;;
         "WARN")    color="${YELLOW}" ;;
@@ -83,7 +83,7 @@ log() {
         "GPU")     color="${MAGENTA}" ;;
         *)         color="${NC}" ;;
     esac
-    
+
     echo -e "${color}[${level}]${NC} ${message}"
     echo "[${TIMESTAMP}] [${level}] ${message}" >> "$LOG_FILE"
 }
@@ -110,7 +110,7 @@ phase_data_preparation() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 1: DATA PREPARATION                                ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     # Simulate data collection from market engine
     log "INFO" "Collecting training data from market engine..."
     sleep 1
@@ -120,7 +120,7 @@ phase_data_preparation() {
     sleep 1
     log "INFO" "Splitting data into training/validation sets (${VALIDATION_SPLIT})..."
     sleep 0.5
-    
+
     log "DONE" "Data preparation complete. 10,000 samples ready for training."
 }
 
@@ -128,19 +128,19 @@ phase_backend_training() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 2: BACKEND RUST MODEL TRAINING                      ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     log "INFO" "Compiling neural consensus model (tent-backend)..."
     sleep 2
     log "INFO" "Training service discovery predictor..."
     sleep 2
     log "INFO" "Training message broker optimizer..."
     sleep 1
-    
+
     if [ -f "$PROJECT_ROOT/backend/Cargo.toml" ]; then
         log "INFO" "Building backend model artifacts with cargo..."
         (cd "$PROJECT_ROOT/backend" && cargo build --release 2>&1 | tail -1) || log "WARN" "Cargo build skipped (dependencies may be missing)"
     fi
-    
+
     log "DONE" "Backend model training complete."
 }
 
@@ -148,14 +148,14 @@ phase_market_training() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 3: MARKET GO MODEL TRAINING                         ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     log "INFO" "Training LSTM price predictor model..."
     sleep 2
     log "INFO" "Training transformer sentiment analyzer..."
     sleep 2
     log "INFO" "Running hyperparameter optimization (genetic algorithm)..."
     sleep 3
-    
+
     log "DONE" "Market model training complete. Best accuracy: 67.3%"
 }
 
@@ -163,19 +163,19 @@ phase_frontend_training() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 4: FRONTEND TYPESCRIPT MODEL QUANTIZATION           ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     log "INFO" "Quantizing chat assistant model for browser deployment..."
     sleep 1
     log "INFO" "Compiling recommendation engine embeddings..."
     sleep 1
     log "INFO" "Building classifier ensemble..."
     sleep 1
-    
+
     if [ -f "$PROJECT_ROOT/frontend/package.json" ]; then
         log "INFO" "Running frontend model build..."
         (cd "$PROJECT_ROOT/frontend" && npm run build 2>&1 | tail -1) || log "WARN" "npm build skipped"
     fi
-    
+
     log "DONE" "Frontend model quantization complete."
 }
 
@@ -183,14 +183,14 @@ phase_tools_training() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 5: PYTHON TOOLS MODEL TRAINING                      ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     log "INFO" "Training AI migration engine..."
     sleep 2
     log "INFO" "Training code review classifier..."
     sleep 1
     log "INFO" "Running static analysis benchmark..."
     sleep 1
-    
+
     log "DONE" "Python tools model training complete."
 }
 
@@ -198,19 +198,19 @@ phase_frailbox_training() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 6: FRAILBOX C++ MODEL COMPILATION                   ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     log "INFO" "Compiling neural inference engine for frailbox..."
     sleep 2
     log "INFO" "Running forward pass optimization..."
     sleep 1
     log "INFO" "Applying weight quantization (FP32 -> INT8)..."
     sleep 2
-    
+
     if [ -d "$PROJECT_ROOT/frailbox/engine/build" ]; then
         log "INFO" "Building frailbox AI controller..."
         (cd "$PROJECT_ROOT/frailbox/engine/build" && cmake --build . 2>&1 | tail -1) || log "WARN" "CMake build skipped"
     fi
-    
+
     log "DONE" "Frailbox model compilation complete."
 }
 
@@ -218,14 +218,14 @@ phase_evaluation() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 7: MODEL EVALUATION                                 ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     log "INFO" "Running validation dataset through all models..."
     sleep 2
     log "INFO" "Computing accuracy metrics..."
     sleep 1
     log "INFO" "Generating evaluation report..."
     sleep 1
-    
+
     cat << 'EVALREPORT' > "$PROJECT_ROOT/metrics/evaluation_${TIMESTAMP}.txt"
 ========================================
 AI Model Evaluation Report
@@ -264,7 +264,7 @@ phase_deployment() {
     log "STEP" "╔══════════════════════════════════════════════════════════════╗"
     log "STEP" "║   PHASE 8: DEPLOYMENT                                      ║"
     log "STEP" "╚══════════════════════════════════════════════════════════════╝"
-    
+
     log "INFO" "Packaging model artifacts..."
     sleep 1
     log "INFO" "Uploading to model registry..."
@@ -273,7 +273,7 @@ phase_deployment() {
     sleep 1
     log "INFO" "Rolling out canary deployment (10% traffic)..."
     sleep 2
-    
+
     log "DONE" "Deployment complete. Models are live."
 }
 
@@ -281,9 +281,9 @@ phase_gpu_monitoring() {
     log "GPU" "══════════════════════════════════════════════════════════════"
     log "GPU" "  GPU Monitoring Active  -  Press Ctrl+C to stop"
     log "GPU" "══════════════════════════════════════════════════════════════"
-    
+
     local monitor_pid=""
-    
+
     if command -v nvidia-smi &> /dev/null; then
         # Monitor GPU in background
         while true; do
@@ -297,7 +297,7 @@ phase_gpu_monitoring() {
         log "WARN" "nvidia-smi not found. GPU monitoring unavailable."
         log "INFO" "Training will proceed on CPU (slow path)."
     fi
-    
+
     echo $monitor_pid
 }
 
@@ -309,7 +309,7 @@ main() {
     local mode="${1:-full}"
     local dry_run="${2:-false}"
     local watch_gpu="${3:-false}"
-    
+
     echo ""
     echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${CYAN}║${NC}        Tent of Trials  -  AI Training Pipeline              ${CYAN}║${NC}"
@@ -317,31 +317,31 @@ main() {
     echo -e "${CYAN}║${NC}        Mode: ${mode}                                        ${CYAN}║${NC}"
     echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    
+
     # Create directories and log file
     create_directories
     touch "$LOG_FILE"
-    
+
     log "INFO" "Pipeline started at $(date)"
     log "INFO" "Model: $MODEL_NAME, LR: $LEARNING_RATE, Batch: $BATCH_SIZE, Epochs: $NUM_EPOCHS"
     log "INFO" "Log file: $LOG_FILE"
-    
+
     # Check dependencies
     local deps_ok=true
     for dep in python3 cargo go node cmake; do
         check_dependency "$dep" || deps_ok=false
     done
-    
+
     if [ "$deps_ok" = false ]; then
         log "WARN" "Some dependencies are missing. Pipeline will skip unavailable steps."
     fi
-    
+
     # Start GPU monitoring if requested
     local gpu_pid=""
     if [ "$watch_gpu" = true ]; then
         gpu_pid=$(phase_gpu_monitoring)
     fi
-    
+
     # Dry run mode
     if [ "$dry_run" = true ]; then
         log "INFO" "DRY RUN MODE  -  Commands will be printed but not executed."
@@ -359,7 +359,7 @@ main() {
         log "DONE" "Dry run complete. No changes made."
         exit 0
     fi
-    
+
     # Execute pipeline phases based on mode
     case "$mode" in
         "full")
@@ -392,12 +392,12 @@ main() {
             exit 1
             ;;
     esac
-    
+
     # Clean up GPU monitor
     if [ -n "$gpu_pid" ]; then
         kill "$gpu_pid" 2>/dev/null || true
     fi
-    
+
     echo ""
     log "DONE" "╔══════════════════════════════════════════════════════════════╗"
     log "DONE" "║   PIPELINE COMPLETE                                        ║"

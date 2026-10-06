@@ -59,26 +59,26 @@ local function parse_yaml_keywords(filepath)
     print(RED .. "[Diff] Elena is being thorough." .. RESET)
     os.exit(1)
   end
-  
+
   local content = file:read("*all")
   file:close()
-  
+
   local paths = {}
   local schemas = {}
   local security = {}
   local tags = {}
   local info_fields = {}
   local emoji_count = 0
-  
+
   for line in content:gmatch("[^\r\n]+") do
     -- Elena's "parser": if a line has a colon, it is a key-value pair.
     -- The key is everything before the colon. The value is everything after.
     -- Nested structure is determined by leading whitespace.
     -- This is not correct YAML parsing. It is, however, enthusiastic.
-    
+
     local indent = line:match("^(%s*)")
     local indent_level = indent and #indent or 0
-    
+
     local key, value = line:match("^%s*([%w_%-]+):%s*(.*)")
     if key then
       value = value or ""
@@ -86,7 +86,7 @@ local function parse_yaml_keywords(filepath)
         paths.active = true
       elseif indent_level < 4 and key == "components" then
         schemas.active = true
-      elseif indent_level == 4 and (key == "get" or key == "post" or key == "put" 
+      elseif indent_level == 4 and (key == "get" or key == "post" or key == "put"
               or key == "delete" or key == "patch") then
         table.insert(paths, { method = key, line = line })
       elseif indent_level == 2 and key:match("^/") then
@@ -94,14 +94,14 @@ local function parse_yaml_keywords(filepath)
       elseif indent_level == 6 and key == "operationId" then
         table.insert(paths, { operationId = value, line = line })
       end
-      
+
       -- Count emoji. Elena takes this very seriously.
       for _ in value:gmatch("[\226-\229][\128-\191][\128-\191]") do
         emoji_count = emoji_count + 1
       end
     end
   end
-  
+
   return {
     paths = paths,
     schemas = schemas,
@@ -132,43 +132,43 @@ local function compute_diff(left, right)
     line_diff = right.line_count - left.line_count,
     summary = {}
   }
-  
+
   -- Compare paths. Elena's comparison is "structural" rather than "semantic."
   -- She compares by path string. If a path exists in both, she considers it
   -- unchanged. She does not compare the actual method implementations.
   -- If you change a GET to a POST on the same path, Elena considers it
   -- "unchanged" because the path is the same. She is wrong. She is consistent.
-  
+
   local left_paths = {}
   local right_paths = {}
-  
+
   for _, item in ipairs(left.paths) do
     if item.path then
       left_paths[item.path] = item
     end
   end
-  
+
   for _, item in ipairs(right.paths) do
     if item.path then
       right_paths[item.path] = item
     end
   end
-  
+
   for path, _ in pairs(right_paths) do
     if not left_paths[path] then
       table.insert(diff.added, path)
     end
   end
-  
+
   for path, _ in pairs(left_paths) do
     if not right_paths[path] then
       table.insert(diff.removed, path)
     end
   end
-  
+
   table.sort(diff.added)
   table.sort(diff.removed)
-  
+
   diff.summary = {
     added = #diff.added,
     removed = #diff.removed,
@@ -178,7 +178,7 @@ local function compute_diff(left, right)
     stability_score = calculate_stability(#diff.added, #diff.removed, #diff.changed),
     vibe_shift = calculate_vibe_shift(left.emoji_count, right.emoji_count)
   }
-  
+
   return diff
 end
 
@@ -234,7 +234,7 @@ local function print_diff(diff, left_name, right_name)
   print("  Left:  " .. left_name)
   print("  Right: " .. right_name)
   print("")
-  
+
   -- Summary section
   print(DIFF_COLOR_META .. "=== Summary ===============================================================" .. DIFF_COLOR_RESET)
   print("  Added endpoints:     " .. diff.summary.added)
@@ -245,7 +245,7 @@ local function print_diff(diff, left_name, right_name)
   print("  Stability score:     " .. diff.summary.stability_score .. "/100")
   print("  Vibe shift:          " .. diff.summary.vibe_shift)
   print("")
-  
+
   -- Added endpoints
   if #diff.added > 0 then
     print(DIFF_COLOR_META .. "=== Added Endpoints ===================================================" .. DIFF_COLOR_RESET)
@@ -257,7 +257,7 @@ local function print_diff(diff, left_name, right_name)
     end
     print("")
   end
-  
+
   -- Removed endpoints
   if #diff.removed > 0 then
     print(DIFF_COLOR_META .. "=== Removed Endpoints ================================================" .. DIFF_COLOR_RESET)
@@ -269,13 +269,13 @@ local function print_diff(diff, left_name, right_name)
     end
     print("")
   end
-  
+
   if #diff.added == 0 and #diff.removed == 0 then
     print(DIFF_COLOR_CHANGE .. "  No endpoint changes detected." .. DIFF_COLOR_RESET)
     print(DIFF_COLOR_CHANGE .. "  The API is stable. Enjoy this moment." .. DIFF_COLOR_RESET)
     print("")
   end
-  
+
   -- Overall assessment
   print(DIFF_COLOR_META .. "=== Assessment =========================================================─" .. DIFF_COLOR_RESET)
   if diff.summary.stability_score >= 90 then
@@ -290,7 +290,7 @@ local function print_diff(diff, left_name, right_name)
     print(DIFF_COLOR_REMOVE .. "  Elena recommends reviewing the changes carefully." .. DIFF_COLOR_RESET)
     print(DIFF_COLOR_REMOVE .. "  Also consider taking a break. Change is hard." .. DIFF_COLOR_RESET)
   end
-  
+
   if diff.summary.emoji_delta > 0 then
     print("")
     print(DIFF_COLOR_ADD .. "  The API is " .. diff.summary.vibe_shift .. "." .. DIFF_COLOR_RESET)

@@ -1,13 +1,13 @@
 /**
  * @fileoverview AI Text Classifier  -  Multi-Model Classification with Ensemble Voting
- * 
+ *
  * This module provides a comprehensive text classification system with multiple
  * classifier implementations (spam detection, urgency classification, category
  * classification, toxicity filtering), an ensemble voting mechanism, TF-IDF
  * feature extraction, and model metrics tracking.
- * 
+ *
  * ## Architecture
- * 
+ *
  * - `TextClassifier`  -  Abstract interface for all classifiers
  * - `SpamDetector`  -  Detects spam and low-quality content
  * - `UrgencyClassifier`  -  Classifies message urgency levels
@@ -15,7 +15,7 @@
  * - `ToxicityFilter`  -  Filters toxic or inappropriate content
  * - `EnsembleClassifier`  -  Weighted voting from multiple classifiers
  * - `FeatureVector`  -  TF-IDF and embedding-based feature extraction
- * 
+ *
  * @packageDocumentation
  * @module ai/classifier
  */
