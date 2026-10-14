@@ -1,0 +1,67 @@
+# EditorConfig — https://editorconfig.org
+# Applies consistent indentation, line endings, and whitespace rules across the
+# many languages in this repository. Most editors honour this file automatically.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Rust backend
+[*.rs]
+indent_style = space
+indent_size = 4
+
+# TypeScript / React frontend
+[*.{ts,tsx,js,jsx,mjs,cjs,json,yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Go market service (gofmt uses tabs)
+[*.go]
+indent_style = tab
+
+# C / C++ frailbox and engine
+[*.{c,h,cpp,hpp,cc}]
+indent_style = space
+indent_size = 4
+
+# Java compliance module
+[*.java]
+indent_style = space
+indent_size = 4
+
+# Lua scanners and openapi tools
+[*.lua]
+indent_style = space
+indent_size = 2
+
+# Ruby market v2 services
+[*.rb]
+indent_style = space
+indent_size = 2
+
+# Haskell openapi bindings
+[*.hs]
+indent_style = space
+indent_size = 2
+
+# Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 2
+
+# Build files
+[Makefile]
+indent_style = tab
+[*.{toml,mod,sum}]
+indent_style = space
+indent_size = 2
+
+# Markdown: do not trim trailing whitespace (used for hard line breaks)
+[*.md]
+trim_trailing_whitespace = false
